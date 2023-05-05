@@ -12,9 +12,8 @@ def index(request):
 
 @app.post('/')
 def index_post(request):
-    level = request.form['level']
-    led = request.form['led']
-    print("Set", led, "led", level)
+    square = request.form['square']
+    print("Row", square[:1], "Col", square[1:2])
     return send_file('./index.html')
 
 
