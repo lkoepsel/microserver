@@ -1,20 +1,104 @@
 # wlan_v2 - wireless lan connection, use LEDs for status
-from microdot import Microdot, send_file
+from microdot import Microdot, Response, send_file
+from microdot_utemplate import render_template
 
 
 app = Microdot()
+Response.default_content_type = 'text/html'
 
 
-@app.route('/')
+marks = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+disabled = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+pico_plays = [[0, 1], [2, 0], [2, 2],
+              [1, 1], [0, 2], [1, 0],
+              [1, 2], [0, 0], [2, 1]]
+pico = 0
+
+
+def init():
+    global pico
+    for i in range(3):
+        for j in range(3):
+            marks[i][j] = ' '
+            disabled[i][j] = ' '
+    pico = 0
+    return marks, disabled
+
+
+def pico_play(t):
+    while(t):
+        global pico
+        print(f"{pico=}")
+        print(f"{pico_plays[pico][0]=} {pico_plays[pico][1]=}")
+        if marks[pico_plays[pico][0]][pico_plays[pico][1]] == 'X':
+            print(pico_plays[pico][0], pico_plays[pico][1], " = X")
+            pico += 1
+
+        else:
+            t = False
+            print(pico_plays[pico][0], pico_plays[pico][1], " = O")
+            set_mark(pico_plays[pico][0], pico_plays[pico][1], 'O')
+            pico += 1
+
+    return
+
+
+def check_path(p):
+    if marks[0][0] == p and marks[0][1] == p and marks[0][2] == p:
+        return True
+    elif marks[1][0] == p and marks[1][1] == p and marks[1][2] == p:
+        return True
+    elif marks[2][0] == p and marks[2][1] == p and marks[2][2] == p:
+        return True
+    elif marks[0][0] == p and marks[1][1] == p and marks[2][2] == p:
+        return True
+    if marks[0][2] == p and marks[1][1] == p and marks[2][0] == p:
+        return True
+    if marks[0][2] == p and marks[1][2] == p and marks[2][2] == p:
+        return True
+    if marks[0][1] == p and marks[1][1] == p and marks[2][1] == p:
+        return True
+    else:
+        return False
+
+
+def set_mark(r, c, p):
+    marks[r][c] = p
+    disabled[r][c] = 'disabled'
+    return marks, disabled
+
+
+@app.route('/', methods=['GET', 'POST'])
 def index(request):
-    return send_file('./index.html')
+    turn = True
+    square = None
+    if request.method == 'POST':
+        if 'square' in request.form.keys():
+            square = request.form['square']
+            row = int(square[:1])
+            col = int(square[1:2])
+
+            markup = set_mark(row, col, 'X')
+            pico_play(turn)
+            won = check_path('X')
+            if won:
+                return send_file('./won.html')
+            else:
+                return render_template('index.html',
+                                       marks=markup[0], disabled=markup[1])
+        elif 'play' in request.form.keys():
+            init()
+            if request.form['play'] == 'Play Again?':
+                return render_template('index.html', marks=marks,
+                                       disabled=disabled)
+    else:
+        print(pico_plays)
+        return render_template('index.html', marks=marks, disabled=disabled)
 
 
-@app.post('/')
-def index_post(request):
-    square = request.form['square']
-    print("Row", square[:1], "Col", square[1:2])
-    return send_file('./index.html')
+@app.post('/won.html')
+def won_post(request):
+    return render_template('index.html', marks=marks, disabled=disabled)
 
 
 @app.route('bulma.min.css')

@@ -1,3 +1,4 @@
+{% args marks, disabled%}
 <!DOCTYPE html>
 <html>
   <head>
@@ -33,38 +34,47 @@
 
                           <div class="column">
                             <label class="radio">
-                              <input type="radio" name="square" value="00" >
+                              <input type="radio" name="square" value="00" {{ disabled [0][0] }}>
+                              {{ marks[0][0] }}
                             </label>
                             <label class="radio">
-                              <input type="radio" name="square" value="01" >
+                              <input type="radio" name="square" value="01" {{ disabled [0][1] }}>
+                              {{ marks[0][1] }}
                             </label>
                             <label class="radio">
-                              <input type="radio" name="square" value="02" >
+                              <input type="radio" name="square" value="02" {{ disabled [0][2] }}>
+                              {{ marks[0][2] }}
                             </label>
                           </div>
 
 
                           <div class="column">
                             <label class="radio">
-                              <input type="radio" name="square" value="10">
+                              <input type="radio" name="square" value="10" {{ disabled [1][0] }}>
+                              {{ marks[1][0] }}
                             </label>
                             <label class="radio">
-                              <input type="radio" name="square" value="11">
+                              <input type="radio" name="square" value="11" {{ disabled [1][1] }}>
+                              {{ marks[1][1] }}
                             </label>
                             <label class="radio">
-                              <input type="radio" name="square" value="12">
+                              <input type="radio" name="square" value="12" {{ disabled [1][2] }}>
+                              {{ marks[1][2] }}
                             </label>
                           </div>
 
                           <div class="column">
                             <label class="radio">
-                              <input type="radio" name="square" value="20">
+                              <input type="radio" name="square" value="20" {{ disabled [2][0] }}>
+                              {{ marks[2][0] }}
                             </label>
                             <label class="radio">
-                              <input type="radio" name="square" value="21">
+                              <input type="radio" name="square" value="21" {{ disabled [2][1] }}>
+                              {{ marks[2][1] }}
                             </label>
                             <label class="radio">
-                              <input type="radio" name="square" value="22">
+                              <input type="radio" name="square" value="22" {{ disabled [2][2] }}>
+                              {{ marks[2][2] }}
                             </label>
                           </div>
 
