@@ -24,3 +24,4 @@ bloom.yaml
 .gdbinit
 secrets.*
 __pycache__/
+.DS*
