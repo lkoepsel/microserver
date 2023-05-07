@@ -1,4 +1,4 @@
-{% args type, row, col %}
+{% args marks, disabled%}
 <!DOCTYPE html>
 <html>
   <head>
@@ -33,35 +33,49 @@
                         <div class="control">
 
                           <div class="column">
-                            <div class="field is-grouped is-hortizontal">
-                              {% if {{row}} == 0 and {{ col}} == 0 %}
-                                {% if {{ type }} == 'R' %}
-                                  {% include 'button.tpl' %}
-                                  {% endif %}
-                                {% else %}
-                                  {% include 'mark.tpl' type %}
-                                  {% endif %}
-                                {% endif %}
-                            {% include 'button.tpl' 'R', 0 %}
-                            {% include 'button.tpl' 'R', 1 %}
-                            {% include 'button.tpl' 'R', 2 %}
+                            <label class="radio">
+                              <input type="radio" name="square" value="00" {{ disabled [0][0] }}>
+                              {{ marks[0][0] }}
+                            </label>
+                            <label class="radio">
+                              <input type="radio" name="square" value="01" {{ disabled [0][1] }}>
+                              {{ marks[0][1] }}
+                            </label>
+                            <label class="radio">
+                              <input type="radio" name="square" value="02" {{ disabled [0][2] }}>
+                              {{ marks[0][2] }}
+                            </label>
                           </div>
-                        </div>
 
 
                           <div class="column">
-                            <div class="field is-grouped is-hortizontal">
-
-                          {% include 'button.tpl' 'R', 10 %}
-                          {% include 'button.tpl' 'R', 11 %}
-                          {% include 'button.tpl' 'R', 12 %}
+                            <label class="radio">
+                              <input type="radio" name="square" value="10" {{ disabled [1][0] }}>
+                              {{ marks[1][0] }}
+                            </label>
+                            <label class="radio">
+                              <input type="radio" name="square" value="11" {{ disabled [1][1] }}>
+                              {{ marks[1][1] }}
+                            </label>
+                            <label class="radio">
+                              <input type="radio" name="square" value="12" {{ disabled [1][2] }}>
+                              {{ marks[1][2] }}
+                            </label>
                           </div>
-                        </div>
 
                           <div class="column">
-                            {% include 'button.tpl' 'R', 20 %}
-                            {% include 'button.tpl' 'R', 21 %}
-                            {% include 'button.tpl' 'R', 22 %}
+                            <label class="radio">
+                              <input type="radio" name="square" value="20" {{ disabled [2][0] }}>
+                              {{ marks[2][0] }}
+                            </label>
+                            <label class="radio">
+                              <input type="radio" name="square" value="21" {{ disabled [2][1] }}>
+                              {{ marks[2][1] }}
+                            </label>
+                            <label class="radio">
+                              <input type="radio" name="square" value="22" {{ disabled [2][2] }}>
+                              {{ marks[2][2] }}
+                            </label>
                           </div>
 
                         </div>
