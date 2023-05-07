@@ -34,22 +34,9 @@ def render(marks, disabled):
                         <div class=\"control\">
 
                           <div class=\"column\">
-                            <label class=\"radio\">
-                              <input type=\"radio\" name=\"square\" value=\"00\" """
-    yield str(disabled [0][0])
-    yield """>
-                              """
-    yield str(marks[0][0])
-    yield """
-                            </label>
-                            <label class=\"radio\">
-                              <input type=\"radio\" name=\"square\" value=\"01\" """
-    yield str(disabled [0][1])
-    yield """>
-                              """
-    yield str(marks[0][1])
-    yield """
-                            </label>
+                            <div class=\"field is-grouped is-hortizontal\">
+                            <div class=\"field\"><label class=\"label is-medium\"> X </label></div>
+                            <div class=\"field\"><label class=\"label is-medium\"> O </label></div>
                             <label class=\"radio\">
                               <input type=\"radio\" name=\"square\" value=\"02\" """
     yield str(disabled [0][2])
@@ -59,26 +46,15 @@ def render(marks, disabled):
     yield """
                             </label>
                           </div>
+                        </div>
 
 
                           <div class=\"column\">
-                            <label class=\"radio\">
-                              <input type=\"radio\" name=\"square\" value=\"10\" """
-    yield str(disabled [1][0])
-    yield """>
-                              """
-    yield str(marks[1][0])
-    yield """
-                            </label>
-                            <label class=\"radio\">
-                              <input type=\"radio\" name=\"square\" value=\"11\" """
-    yield str(disabled [1][1])
-    yield """>
-                              """
-    yield str(marks[1][1])
-    yield """
-                            </label>
-                            <label class=\"radio\">
+                            <div class=\"field is-grouped is-hortizontal\">
+
+ <div class=\"field\"><label class=\"label is-medium\"> X </label></div>
+ <div class=\"field\"><label class=\"label is-medium\"> O </label></div>
+                           <label class=\"radio\">
                               <input type=\"radio\" name=\"square\" value=\"12\" """
     yield str(disabled [1][2])
     yield """>
@@ -87,6 +63,7 @@ def render(marks, disabled):
     yield """
                             </label>
                           </div>
+                        </div>
 
                           <div class=\"column\">
                             <label class=\"radio\">
