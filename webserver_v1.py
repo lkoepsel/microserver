@@ -10,11 +10,11 @@ Request.socket_read_timeout = None
 
 
 marks = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
-disabled = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
 pico_plays = [[0, 1], [2, 0], [2, 2],
               [1, 1], [0, 2], [1, 0],
               [1, 2], [0, 0], [2, 1]]
 pico = 0
+name = 'markO.tpl'
 
 
 def init():
@@ -22,10 +22,8 @@ def init():
     for i in range(3):
         for j in range(3):
             marks[i][j] = ' '
-            disabled[i][j] = ' '
     pico = 0
-    # print(f"INIT{pico=}{marks=}{disabled=}")
-    return marks, disabled
+    return marks
 
 
 def pico_play(t):
@@ -69,8 +67,7 @@ def check_path(p):
 
 def set_mark(r, c, p):
     marks[r][c] = p
-    disabled[r][c] = 'disabled'
-    return marks, disabled
+    return marks
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -80,10 +77,14 @@ def index(request):
     square = None
     if request.method == 'POST':
         if 'square' in request.form.keys():
-            square = request.form['square']
-            row = int(square[:1])
-            col = int(square[1:2])
-
+            square = int(request.form['square'])
+            if square < 10:
+                row = 0
+                col = square
+            else:
+                col = square % 10
+                row = int((square - col) / 10)
+            print(f"{row=} {col=}")
             markup = set_mark(row, col, 'X')
             draw = pico_play(turn)
             if draw:
@@ -95,31 +96,29 @@ def index(request):
             elif won:
                 return send_file('./won.html')
             else:
-                return render_template('index.html',
-                                       marks=markup[0], disabled=markup[1])
+                return render_template('index.html')
         elif 'play' in request.form.keys():
             init()
             if request.form['play'] == 'Play Again?':
-                return render_template('index.html', marks=marks,
-                                       disabled=disabled)
+                return render_template('index.html')
     else:
         # print(pico_plays)
-        return render_template('index.html', marks=marks, disabled=disabled)
+        return render_template('index.html')
 
 
 @app.post('/won.html')
 def won_post(request):
-    return render_template('index.html', marks=marks, disabled=disabled)
+    return render_template('index.html')
 
 
 @app.post('/lost.html')
 def lost_post(request):
-    return render_template('index.html', marks=marks, disabled=disabled)
+    return render_template('index.html')
 
 
 @app.post('/draw.html')
 def draw_post(request):
-    return render_template('index.html', marks=marks, disabled=disabled)
+    return render_template('index.html')
 
 
 @app.route('bulma.min.css')
