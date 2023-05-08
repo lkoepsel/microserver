@@ -5,29 +5,15 @@ import time
 import network
 from machine import Pin, Timer
 import secrets
+from random import randint
 
 
 wireless = Pin("LED", Pin.OUT)
-yellow = Pin(2, Pin.OUT)
-green = Pin(15, Pin.OUT)
-white = Pin(16, Pin.OUT)
-blue = Pin(22, Pin.OUT)
 
 
 def tick(timer):
     global wireless
     wireless.toggle()
-
-
-def set_led(color, level):
-    if color == 'WHITE':
-        white.value(int(level))
-    if color == 'GREEN':
-        green.value(int(level))
-    if color == 'BLUE':
-        blue.value(int(level))
-    if color == 'YELLOW':
-        yellow.value(int(level))
 
 
 wlan = network.WLAN(network.STA_IF)
@@ -65,34 +51,40 @@ disabled = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
 pico_plays = [[0, 1], [2, 0], [2, 2],
               [1, 1], [0, 2], [1, 0],
               [1, 2], [0, 0], [2, 1]]
-pico = 0
+pico = randint(0, 9)
+print(f"{pico=}")
+size = 9
+plays = 0
 
 
 def init():
-    global pico
+    global pico, plays
     for i in range(3):
         for j in range(3):
             marks[i][j] = ' '
             disabled[i][j] = ' '
-    pico = 0
-    # print(f"INIT{pico=}{marks=}{disabled=}")
+    pico = randint(0, 9)
+    print(f"{pico=}")
+    plays = 0
     return marks, disabled
 
 
 def pico_play(t):
     while(t):
-        global pico
+        global pico, plays, size
 
+        print(f"{plays=} {pico=}")
         if marks[pico_plays[pico][0]][pico_plays[pico][1]] == 'X':
-            if pico >= 8:
-                # print(f"Pentultimate spot!{pico=}")
+            if plays >= 8:
                 return True
-            pico += 1
+            plays += 1
+            pico = (pico + 1) % size
 
         else:
             t = False
             set_mark(pico_plays[pico][0], pico_plays[pico][1], 'O')
-            pico += 1
+            plays += 1
+            pico = (pico + 1) % size
 
     return
 
