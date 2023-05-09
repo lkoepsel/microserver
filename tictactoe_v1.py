@@ -52,7 +52,7 @@ pico_plays = [[0, 1], [2, 0], [2, 2],
               [1, 1], [0, 2], [1, 0],
               [1, 2], [0, 0], [2, 1]]
 pico = randint(0, 9)
-print(f"{pico=}")
+# print(f"{pico=}")
 size = 9
 plays = 0
 
@@ -64,7 +64,7 @@ def init():
             marks[i][j] = ' '
             disabled[i][j] = ' '
     pico = randint(0, 9)
-    print(f"{pico=}")
+    # print(f"{pico=}")
     plays = 0
     return marks, disabled
 
@@ -73,7 +73,7 @@ def pico_play(t):
     while(t):
         global pico, plays, size
 
-        print(f"{plays=} {pico=}")
+        # print(f"{plays=} {pico=}")
         if marks[pico_plays[pico][0]][pico_plays[pico][1]] == 'X':
             if plays >= 8:
                 return True
@@ -152,16 +152,19 @@ def index(request):
 
 @app.post('/won.html')
 def won_post(request):
+    init()
     return render_template('index.html', marks=marks, disabled=disabled)
 
 
 @app.post('/lost.html')
 def lost_post(request):
+    init()
     return render_template('index.html', marks=marks, disabled=disabled)
 
 
 @app.post('/draw.html')
 def draw_post(request):
+    init()
     return render_template('index.html', marks=marks, disabled=disabled)
 
 
