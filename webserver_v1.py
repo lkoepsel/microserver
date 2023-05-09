@@ -136,11 +136,6 @@ def bulma(request):
     return send_file('./bulma.min.css', max_age=31536000)
 
 
-@app.route('bulma-divider.min.css')
-def bulma_divider(request):
-    return send_file('./bulma-divider.min.css', max_age=31536000)
-
-
 @app.get('favicon.png')
 def favicon(request):
     return send_file('./favicon.png', content_type='image/png')
