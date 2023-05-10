@@ -6,6 +6,7 @@ import network
 from machine import Pin, Timer
 import secrets
 from random import randint
+import ubinascii
 
 
 wireless = Pin("LED", Pin.OUT)
@@ -19,6 +20,8 @@ def tick(timer):
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(secrets.ssid, secrets.password)
+# toggle power mode to increase responsiveness
+wlan.config(pm=0xa11140)
 
 blink = Timer()
 
@@ -38,7 +41,13 @@ if wlan.status() != 3:
 else:
     blink.deinit()
     status = wlan.ifconfig()
-    print('ip = ' + status[0])
+    MAC = ubinascii.hexlify(network.WLAN().config('mac'), ':').decode()
+    print(f"Name: Pico W X")
+    print(f"IP Address: {status[0]}")
+    print(f"MAC Address: {MAC}")
+    print(f"Channel: {wlan.config('channel')}")
+    print(f"SSID: {wlan.config('essid')}")
+    print(f"TX Power: {wlan.config('txpower')}")
 
 
 app = Microdot()
