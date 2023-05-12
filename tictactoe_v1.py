@@ -2,6 +2,7 @@
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template
 from random import randint
+import re
 import sys
 
 
@@ -17,13 +18,18 @@ Response.default_content_type = 'text/html'
 Request.socket_read_timeout = None
 
 
-marks = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
-disabled = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+m = re.compile('ZZ')
+radio = '<input type="radio" name="square" value="ZZ">'
+markX = '<strong>X</strong>'
+markO = '<strong>O</strong>'
+marks = [['', '', ''],
+         [' ', ' ', ' '],
+         [' ', ' ', ' ']]
+
 pico_plays = [[0, 1], [2, 0], [2, 2],
               [1, 1], [0, 2], [1, 0],
               [1, 2], [0, 0], [2, 1]]
 pico = randint(0, 9)
-# print(f"{pico=}")
 size = 9
 plays = 0
 
@@ -32,20 +38,18 @@ def init():
     global pico, plays
     for i in range(3):
         for j in range(3):
-            marks[i][j] = ' '
-            disabled[i][j] = ' '
+            v = str(i) + str(j)
+            marks[i][j] = m.sub(v, radio)
     pico = randint(0, 9)
-    # print(f"{pico=}")
     plays = 0
-    return marks, disabled
+    return marks
 
 
 def pico_play(t):
     while(t):
         global pico, plays, size
 
-        # print(f"{plays=} {pico=}")
-        if marks[pico_plays[pico][0]][pico_plays[pico][1]] == 'X':
+        if marks[pico_plays[pico][0]][pico_plays[pico][1]] == markX:
             if plays >= 8:
                 return True
             plays += 1
@@ -53,7 +57,7 @@ def pico_play(t):
 
         else:
             t = False
-            set_mark(pico_plays[pico][0], pico_plays[pico][1], 'O')
+            set_mark(pico_plays[pico][0], pico_plays[pico][1], markO)
             plays += 1
             pico = (pico + 1) % size
 
@@ -83,8 +87,7 @@ def check_path(p):
 
 def set_mark(r, c, p):
     marks[r][c] = p
-    disabled[r][c] = 'disabled'
-    return marks, disabled
+    return marks
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -98,45 +101,43 @@ def index(request):
             row = int(square[:1])
             col = int(square[1:2])
 
-            markup = set_mark(row, col, 'X')
+            set_mark(row, col, markX)
             draw = pico_play(turn)
             if draw:
                 return send_file('./draw.html')
-            lost = check_path('O')
-            won = check_path('X')
+            lost = check_path(markO)
+            won = check_path(markX)
             if lost:
                 return send_file('./lost.html')
             elif won:
                 return send_file('./won.html')
             else:
                 return render_template('index.html',
-                                       marks=markup[0], disabled=markup[1])
+                                       marks=marks)
         elif 'play' in request.form.keys():
             init()
             if request.form['play'] == 'Play Again?':
-                return render_template('index.html', marks=marks,
-                                       disabled=disabled)
+                return render_template('index.html', marks=marks)
     else:
-        # print(pico_plays)
-        return render_template('index.html', marks=marks, disabled=disabled)
+        return render_template('index.html', marks=marks)
 
 
 @app.post('/won.html')
 def won_post(request):
     init()
-    return render_template('index.html', marks=marks, disabled=disabled)
+    return render_template('index.html', marks=marks)
 
 
 @app.post('/lost.html')
 def lost_post(request):
     init()
-    return render_template('index.html', marks=marks, disabled=disabled)
+    return render_template('index.html', marks=marks)
 
 
 @app.post('/draw.html')
 def draw_post(request):
     init()
-    return render_template('index.html', marks=marks, disabled=disabled)
+    return render_template('index.html', marks=marks)
 
 
 @app.route('bulma.min.css')
@@ -155,4 +156,5 @@ def computer_svg(request):
                      max_age=31536000)
 
 
+init()
 app.run(debug=True)
