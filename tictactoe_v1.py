@@ -2,11 +2,14 @@
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template
 from random import randint
+import sys
 
 
-# Required for WLAN on Pico W, comment out if on desktop with networking
-from wlan import connect
-connect()
+# Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
+# Will not differeniate between Pico and Pico W!
+if hasattr(sys.implementation, '_machine'):
+    from wlan import connect
+    connect()
 
 
 app = Microdot()
