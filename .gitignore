@@ -23,5 +23,6 @@ build
 bloom.yaml
 .gdbinit
 secrets.*
+config.*
 __pycache__/
 .DS*
