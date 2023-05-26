@@ -25,9 +25,7 @@ def index(request):
 @app.post('/')
 def index_post(request):
     level = int(request.form['level'])
-    print(f"{level=}")
     builtin.value(level)
-    print(f"{level=}")
     return send_file('templates/index.html')
 
 
