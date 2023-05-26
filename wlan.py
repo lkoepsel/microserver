@@ -3,7 +3,6 @@ import time
 import network
 from machine import Pin, Timer
 import secrets
-# import config
 import ubinascii
 
 
@@ -69,7 +68,6 @@ def connect():
         blink.deinit()
         status = wlan.ifconfig()
         MAC = ubinascii.hexlify(network.WLAN().config('mac'), ':').decode()
-        # print(f"Name: {config.name}")
         print(f"IP Address: {status[0]}")
         print(f"MAC Address: {MAC}")
         print(f"Channel: {wlan.config('channel')}")

@@ -1,4 +1,4 @@
-# webserver_v1 files
+# webserver_v3 files
 /templates
 /utemplate
 computer.svg
@@ -8,6 +8,7 @@ secrets.py
 wlan.py
 +webserver_v3.py
 templates/index.html
+templates/marx.min.css
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py

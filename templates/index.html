@@ -1,0 +1,44 @@
+{% args led_state%}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="marx.min.css">
+    <title>Pico W</title>
+  </head>
+  <body>
+    <main>
+      <h1> Pico W LED Demo </h1>
+      <figure>
+        <img src="computer.svg" height="400" width="400" alt="Pico W Icon" />
+      </figure>
+
+      <form action="" method="POST">
+
+        <label ><strong>Choose LED:</strong></label>
+        <label >
+          <input type="checkbox" name="led" value="YELLOW" {{ led_state[0] }}>
+          YELLOW
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="GREEN" {{ led_state[1] }}>
+          GREEN
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="RED" {{ led_state[2] }}>
+          RED
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="BLUE" {{ led_state[3] }}>
+          BLUE
+        </label>
+
+        <div align="left">
+          <input type="submit" value="Lights!">
+        </div>
+
+      </form>
+    </main>
+  </body>
+</html>
