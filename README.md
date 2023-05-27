@@ -1,15 +1,34 @@
 # Pico W LED Demo
 The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small server called [microdot](), which was written for [MicroPython](), running on a Pico W. It is intended to serve as a simple example as to how to develop a user-facing webpage running on the Pico W.
+## Versions
+There are different versions, *_v1*, *_v2*, *_v3* etc. 
 
-There are three different versions, *_v1*, *_v2* and *_v3*. With each version is:
+Initially run *mpbuild.py*, this will setup the board with version 1 of the software. See "Automation..." below for more information.
+
+To move to the next version.
+Each version has:
 * *webserver_vn.py* - contains the code which runs as main.py on the Pico.
 * *index_vn.py* - contains the web page code and needs to be copied to *template/index.html* on the Pico.
 
-To view each version:
-1. Copy the desired *webserver_vn.py* to main.py, you can make this automatic by changing the value n in the file *files.txt* so that it copies the desired version.
-2. Duplicate the matching version of *index_vn.html* to *index.html* and mpbuild will copy appropriately.
-3. Run mpbuild.py to load the Pico. See "Automation..." below for more information.
+To view the next version:
+1. Copy the desired *webserver_vn.py* to *:main.py*.
+2. Copy the matching version of *templates/index_vn.html* to *:templates/index.html*.
+3. Starting with version 4, you will also need to copy *templates/header_v4.tpl* to *:templates/header.tpl*
 
+### Version 1
+Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
+
+### Version 2
+Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for several values.
+
+### Version 3
+Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.
+
+### Version 4 
+Adds information to the four LED's by providing documentation as to the color/pin combination expected. This adds using a template file with variables, expanding on the user experience.
+
+### Version 5
+Provides the capability for the user to set both the color and pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard.
 ## Additional Files Required
 ### secrets.py
 This file contains the SSID and password of your desired wireless LAN connection:

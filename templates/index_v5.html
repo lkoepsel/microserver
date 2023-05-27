@@ -1,0 +1,58 @@
+{% args led_state, leds, setup%}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="marx.min.css">
+    <style>
+        table,
+        td,
+        th,
+        td {
+            text-align: right;
+        }
+    </style>
+
+    <title>Pico W</title>
+  </head>
+  <body>
+    <main>
+      {% if setup %}
+      {% include "header.tpl" leds %}
+      {% else %}
+      {% include "setup.tpl" leds %}
+      {% endif %}
+
+      <figure>
+        <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
+      </figure>
+
+      <form action="" method="POST">
+
+        <label ><strong>Choose LED(s):</strong></label>
+        <label >
+          <input type="checkbox" name="led" value="YELLOW" {{ led_state[0] }}>
+          YELLOW
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="GREEN" {{ led_state[1] }}>
+          GREEN
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="RED" {{ led_state[2] }}>
+          RED
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="BLUE" {{ led_state[3] }}>
+          BLUE
+        </label>
+
+        <div align="left">
+          <input type="submit" value="Lights!">
+        </div>
+
+      </form>
+    </main>
+  </body>
+</html>
