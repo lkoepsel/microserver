@@ -10,7 +10,7 @@ green = Pin(15, Pin.OUT)
 red = Pin(16, Pin.OUT)
 blue = Pin(22, Pin.OUT)
 led_state = ['', '', '', '']
-leds = ['yellow', 'green', 'red', 'blue']
+leds = [['yellow', 4], ['green', 20], ['red', 21], ['blue', 29]]
 
 
 def set_led(leds):
