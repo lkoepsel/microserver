@@ -1,4 +1,4 @@
-# webserver_v1 files
+# webserver_v2 files
 /templates
 /utemplate
 computer.svg

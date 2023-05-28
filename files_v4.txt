@@ -1,4 +1,4 @@
-# webserver_v1 files
+# webserver_v4 files
 /templates
 /utemplate
 computer.svg
@@ -12,4 +12,4 @@ utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
 !templates/index_v4.html,templates/index.html
-!templates/header_v4.tpl,templates/header.tpl
+!templates/configured_v4.tpl,templates/configured.tpl
