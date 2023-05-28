@@ -11,7 +11,7 @@ red = Pin(16, Pin.OUT)
 blue = Pin(22, Pin.OUT)
 led_state = ['', '', '', '']
 leds = [['yellow', 4], ['green', 20], ['red', 21], ['blue', 29]]
-setup = True
+setup = False
 
 
 def set_led(leds):
@@ -66,7 +66,7 @@ Request.socket_read_timeout = None
 
 
 @app.route('marx.min.css')
-def bulma(request):
+def marx(request):
     return send_file('templates/marx.min.css', max_age=31536000)
 
 

@@ -1,0 +1,14 @@
+# webserver_v1 files
+/templates
+/utemplate
+computer.svg
+microdot.py
+microdot_utemplate.py
+secrets.py
+wlan.py
++webserver_v1.py
+templates/marx.min.css
+utemplate/compiled.py
+utemplate/recompile.py
+utemplate/source.py
+!templates/index_v1.html,templates/index.html

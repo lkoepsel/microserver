@@ -65,7 +65,7 @@ Request.socket_read_timeout = None
 
 
 @app.route('marx.min.css')
-def bulma(request):
+def marx(request):
     return send_file('templates/marx.min.css', max_age=31536000)
 
 

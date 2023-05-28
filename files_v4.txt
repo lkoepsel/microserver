@@ -6,9 +6,10 @@ microdot.py
 microdot_utemplate.py
 secrets.py
 wlan.py
-+webserver_v1.py
-templates/index.html
++webserver_v4.py
 templates/marx.min.css
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
+!templates/index_v4.html,templates/index.html
+!templates/header_v4.tpl,templates/header.tpl

@@ -1,19 +1,11 @@
 # Pico W LED Demo
-The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small server called [microdot](), which was written for [MicroPython](), running on a Pico W. It is intended to serve as a simple example as to how to develop a user-facing webpage running on the Pico W.
-## Versions
+The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small web server software called [microdot](), which was written for [MicroPython](), running on a Pico W. This demo is intended to serve as a simple example as to how to develop a user-facing webpage running on the Pico W.
+## Versions and Installation
 There are different versions, *_v1*, *_v2*, *_v3* etc. 
 
-Initially run *mpbuild.py*, this will setup the board with version 1 of the software. See "Automation..." below for more information.
+Initially run `mpbuild.py files_v1.txt`, this will setup the board with version 1 of the software. See "Automation..." below for more information.
 
-To move to the next version.
-Each version has:
-* *webserver_vn.py* - contains the code which runs as main.py on the Pico.
-* *index_vn.py* - contains the web page code and needs to be copied to *template/index.html* on the Pico.
-
-To view the next version:
-1. Copy the desired *webserver_vn.py* to *:main.py*.
-2. Copy the matching version of *templates/index_vn.html* to *:templates/index.html*.
-3. Starting with version 4, you will also need to copy *templates/header_v4.tpl* to *:templates/header.tpl*
+To move to the next version, run `mpr littlefs_rp2` followed by `mpbuild files_vn.txt`, with *n* as the desired build version.
 
 ### Version 1
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
@@ -38,17 +30,16 @@ password = 'mpc1234!'
 ```
 A simple text file called *secrets.py* with the above format and the correct SSID and password is required. It sits at the root folder along with the other files such as wlan.py.
 ## Installation
-1. Copy the folder to your PC
+* Copy the folder to your PC
+
 To run on a Pico W:
-```bash
-# ensure secrets.py has the desired SSID and password for your WiFi
-# Apply the version instructions above then
-mpbuild -e
-# start a serial program (see Note below)
-# press Reset or cycle power on your Pico W
-# Use the IP address provided via the serial port
-# Browse to IP address:5001 to play game (not 0.0.0.0 as stated)
-```
+
+1. Ensure secrets.py has the desired SSID and password for your WiFi
+1. Apply the version instructions above
+1. Start a serial program (see Note below)
+1. Press Reset or cycle power on your Pico W
+1. Use the IP address provided via the serial port
+1. Browse to IP address:5001 to play game (not 0.0.0.0 as stated)
 
 ## Resolving Connection Errors with Pico W
 Sometimes it is difficult to connect to the Pico W, here is some background and hints how to resolve issues.
@@ -95,12 +86,23 @@ The *Pico W* doesn't have a reset button, which means there are two alternatives
 This program hasn't been optimized for size as its a capability demo, not a production program. I have switched from bulma css framework (200K) to marx css frame work (10k).
 
 ## Automation to Copy Project to Board
-The program *mpbuild* will copy all required program files to the board. The program uses *files.txt* to identify which files to copy based on the first character in the line:
-* '*#*' - comment line, line is ignored
-* '*/*' - directory, a mkdir is executed. This line must be before any files which need to be copied into the directory.
-* '*+*' - main program file, it will be copied into *main.py* to execute upon reset
-* No special characters (just the file name), file copied over to board
+The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board.
+```bash
+mpbuild.py -h
+usage: mpbuild.py [-h] [-n] [-v] build
 
+Reads names of files from build file in current folder. Copies files to attached MicroPython
+board. Use --dry-run or -n to print commands, instead of execution. Filenames can NOT have blanks
+in their names.
+
+positional arguments:
+  build          file to use for building Pico
+
+options:
+  -h, --help     show this help message and exit
+  -n, --dry-run  required to copy the files to the board
+  -v, --verbose  print lines in build file prior to execution
+```
 The program uses pyboard.py from mpremote (installed via pip), which means the PYBOARD_DEVICE environmental variable must be set. See [here](https://docs.micropython.org/en/latest/reference/pyboard.py.html#running-a-command-on-the-device).
 
 ## Tool to Erase Pico LittleFS filesystem
