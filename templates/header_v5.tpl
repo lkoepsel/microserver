@@ -1,5 +1,4 @@
 {% args leds%}
-<h1> Pico W </h1>
 <table>
     <thead>
         <tr>

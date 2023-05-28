@@ -7,7 +7,7 @@ microdot_utemplate.py
 secrets.py
 wlan.py
 +webserver_v2.py
-templates/marx.min.css
+templates/marx.css
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py

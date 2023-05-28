@@ -64,9 +64,9 @@ Response.default_content_type = 'text/html'
 Request.socket_read_timeout = None
 
 
-@app.route('marx.min.css')
+@app.route('marx.css')
 def marx(request):
-    return send_file('templates/marx.min.css', max_age=31536000)
+    return send_file('templates/marx.css', max_age=31536000)
 
 
 @app.route('/', methods=['GET', 'POST'])

@@ -11,7 +11,7 @@ red = Pin(16, Pin.OUT)
 blue = Pin(22, Pin.OUT)
 led_state = ['', '', '', '']
 leds = [['yellow', 4], ['green', 20], ['red', 21], ['blue', 29]]
-setup = False
+confirmed = False
 
 
 def set_led(leds):
@@ -65,9 +65,9 @@ Response.default_content_type = 'text/html'
 Request.socket_read_timeout = None
 
 
-@app.route('marx.min.css')
+@app.route('marx.css')
 def marx(request):
-    return send_file('templates/marx.min.css', max_age=31536000)
+    return send_file('templates/marx.css', max_age=31536000)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -75,9 +75,9 @@ def index(request):
     global led_state
     if request.method == 'POST':
         set_led(request.form.getlist('led'))
-        return render_template('index.html', led_state, leds, setup)
+        return render_template('index.html', led_state, leds, confirmed)
     else:
-        return render_template('index.html', led_state, leds, setup)
+        return render_template('index.html', led_state, leds, confirmed)
 
 
 @app.get('computer.svg')

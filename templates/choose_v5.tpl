@@ -1,19 +1,4 @@
-{% args led_state%}
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="marx.css">
-    <title>Pico W</title>
-  </head>
-  <body>
-    <main>
-      <h1> Pico W LED Demo </h1>
-      <figure>
-        <img src="computer.svg" height="400" width="400" alt="Pico W Icon" />
-      </figure>
-
+{% args led_state, leds%}
       <form action="" method="POST">
 
         <label ><strong>Choose LED(s):</strong></label>
@@ -39,6 +24,3 @@
         </div>
 
       </form>
-    </main>
-  </body>
-</html>

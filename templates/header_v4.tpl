@@ -1,9 +1,8 @@
 {% args leds%}
-<h1> Pico W </h1>
 <table>
     <thead>
         <tr>
-            <th colspan="2">LED Demo</th>
+            <th colspan="2">LED Demo Pins</th>
         </tr>
     </thead>
     <tbody>

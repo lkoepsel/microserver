@@ -7,10 +7,11 @@ microdot_utemplate.py
 secrets.py
 wlan.py
 +webserver_v5.py
-templates/marx.min.css
+templates/marx.css
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
 !templates/index_v5.html,templates/index.html
 !templates/header_v5.tpl,templates/header.tpl
 !templates/setup_v5.tpl,templates/setup.tpl
+!templates/choose_v5.tpl,templates/choose.tpl

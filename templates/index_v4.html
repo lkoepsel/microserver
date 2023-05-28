@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="marx.min.css">
+    <link rel="stylesheet" href="marx.css">
     <style>
         table,
         td,
@@ -17,12 +17,14 @@
     <title>Pico W</title>
   </head>
   <body>
-    <main>
-      {% include "header.tpl" leds %}
 
+    <main>
       <figure>
         <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
       </figure>
+      <h1> Pico W LED Demo </h1>
+
+      {% include "header.tpl" leds %}
 
       <form action="" method="POST">
 

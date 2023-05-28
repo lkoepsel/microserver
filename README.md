@@ -5,7 +5,7 @@ There are different versions, *_v1*, *_v2*, *_v3* etc.
 
 Initially run `mpbuild.py files_v1.txt`, this will setup the board with version 1 of the software. See "Automation..." below for more information.
 
-To move to the next version, run `mpr littlefs_rp2` followed by `mpbuild files_vn.txt`, with *n* as the desired build version.
+To move to the next version, run [`mpr littlefs_rp2`](https://wellys.com/posts/rp2040_mpremote/#config) followed by `mpbuild files_vn.txt`, with *n* as the desired build version.
 
 ### Version 1
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
