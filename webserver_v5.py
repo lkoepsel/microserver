@@ -3,12 +3,7 @@ from machine import Pin
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template
 import sys
-from typing import NamedTuple
 
-
-# dictionary leds:
-#    key: color [pin, gpio, state]
-leds = {}
 
 # PicoW Pin Numbering
 PicoW_pins = [[0, 'Not a pin'],     # 0 Index, not a valid pin
@@ -53,93 +48,103 @@ PicoW_pins = [[0, 'Not a pin'],     # 0 Index, not a valid pin
               [0, 'VSYS'],
               [0, 'VBUS']         # Pin 40
               ]
+colors = []
+pins = []
+gpio = []
+states = []
+levels = []
 
 
 def set_leds(r):
-    global leds
-    print(f"set_leds_start{leds}")
-    leds[0].color = r.get('color_0')
-    leds[0].pin = PicoW_pins[r.get('pin_0')][0]
-    leds[0].led = Pin(leds[0].pin, Pin.OUT)
-    leds[0].state = ''
-    leds[1].color = r.get('color_1')
-    leds[1].pin = PicoW_pins[r.get('pin_1')][0]
-    leds[1].led = Pin(leds[0].pin, Pin.OUT)
-    leds[1].state = ''
-    leds[2].color = r.get('color_2')
-    leds[2].pin = PicoW_pins[r.get('pin_2')][0]
-    leds[2].led = Pin(leds[0].pin, Pin.OUT)
-    leds[2].state = ''
-    leds[3].color = r.get('color_3')
-    leds[3].pin = PicoW_pins[r.get('pin_3')][0]
-    leds[3].led = Pin(leds[0].pin, Pin.OUT)
-    leds[3].state = ''
-    print(f"set_leds_end{leds}")
+    global colors, pins, gpio, states, levels
+
+    colors.append(r.get('color_0'))
+    pins.append(int(r.get('pin_0')))
+    gpio.append(PicoW_pins[int(r.get('pin_0'))][0])
+    states.append('')
+    levels.append(0)
+    Pin(gpio[0], Pin.OUT, value=0)
+
+    colors.append(r.get('color_1'))
+    pins.append(int(r.get('pin_1')))
+    gpio.append(PicoW_pins[int(r.get('pin_1'))][0])
+    states.append('')
+    levels.append(0)
+    Pin(gpio[1], Pin.OUT, value=0)
+
+    colors.append(r.get('color_2'))
+    pins.append(int(r.get('pin_2')))
+    gpio.append(PicoW_pins[int(r.get('pin_2'))][0])
+    states.append('')
+    levels.append(0)
+    Pin(gpio[2], Pin.OUT, value=0)
+
+    colors.append(r.get('color_3'))
+    pins.append(int(r.get('pin_3')))
+    gpio.append(PicoW_pins[int(r.get('pin_3'))][0])
+    states.append('')
+    levels.append(0)
+    Pin(gpio[3], Pin.OUT, value=0)
 
 
-def control_led(c_leds):
-    global leds
-    print(f"control_leds_start{leds}")
-    if len(leds) == 0:
+def control_led(r_leds):
+    global colors, states, gpio
+    if len(r_leds) == 0:
         for i in range(4):
-            leds[i].led.value(0)
-            leds[i].state = ''
+            Pin(gpio[i], Pin.OUT, value=0)
+            states[i] = ''
     else:
-        for c_led in c_leds:
-            for i in range(4):
-                if leds[i].color in leds:
-                    leds[i].value(1)
-                    leds[i].state = 'checked'
-                else:
-                    leds[i].value(0)
-                    leds[i].state = ''
-    print(f"control_leds_end{leds}")
+        for i in range(4):
+            if colors[i] in r_leds:
+                Pin(gpio[i], Pin.OUT, value=1)
+                states[i] = 'checked'
+            else:
+                Pin(gpio[i], Pin.OUT, value=0)
+                states[i] = ''
 
 
-# Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
-# Will not differeniate between Pico and Pico W!
-if hasattr(sys.implementation, '_machine'):
-    from wlan import connect
-    if not (connect()):
-        print(f"wireless connection failed")
-        sys.exit()
+def web_server():
+
+    # Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
+    # Will not differeniate between Pico and Pico W!
+    if hasattr(sys.implementation, '_machine'):
+        from wlan import connect
+        if not (connect()):
+            print(f"wireless connection failed")
+            sys.exit()
+
+    app = Microdot()
+    Response.default_content_type = 'text/html'
+    Request.socket_read_timeout = None
+
+    @ app.route('marx.css')
+    def marx(request):
+        return send_file('templates/marx.css', max_age=31536000)
+
+    @ app.post('/control.html')
+    def control(request):
+        global leds
+        if 'color_0' in request.form.keys():
+            set_leds(request.form)
+        else:
+            control_led(request.form.getlist('led'))
+        return render_template('control.html', colors, pins, states)
+
+    @ app.get('/')
+    def index(request):
+        return send_file('templates/index.html')
+
+    @ app.get('computer.svg')
+    def computer_svg(request):
+        return send_file('./computer.svg',
+                         content_type='image/svg+xml', max_age=31536000)
+
+    @ app.get('favicon.png')
+    def favicon(request):
+        return send_file('./favicon.png', content_type='image/png')
+
+    app.run(debug=True)
 
 
-app = Microdot()
-Response.default_content_type = 'text/html'
-Request.socket_read_timeout = None
-
-
-@app.route('marx.css')
-def marx(request):
-    return send_file('templates/marx.css', max_age=31536000)
-
-
-@app.post('/control.html')
-def control(request):
-    global led_state, leds
-    if 'led' in request.form.keys():
-        control_led(request.form.getlist('led'))
-    else:
-        print(f"control_else{leds}")
-        set_leds(request.form)
-    return render_template('control.html', leds)
-
-
-@app.get('/')
-def index(request):
-    return send_file('templates/index.html')
-
-
-@app.get('computer.svg')
-def computer_svg(request):
-    return send_file('./computer.svg',
-                     content_type='image/svg+xml', max_age=31536000)
-
-
-@app.get('favicon.png')
-def favicon(request):
-    return send_file('./favicon.png', content_type='image/png')
-
-
-app.run(debug=True)
+if __name__ == '__main__':
+    web_server()

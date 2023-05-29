@@ -111,3 +111,39 @@ Based on a [file by @jimmo](https://github.com/jimmo/dotfiles/blob/master/common
 mpremote exec --no-follow  "import os, machine, rp2; os.umount('/'); bdev = rp2.Flash(); os.VfsLfs2.mkfs(bdev, progsize=256); vfs = os.VfsLfs2(bdev, progsize=256); os.mount(vfs, '/'); machine.reset()"
 ```
 **IT WILL ERASE ALL OF YOUR PROGRAM FILES ON YOUR PICO!!** It will not delete the MicroPython uf2 file.
+
+## Error Codes
+When using Thonny or the REPL, frequently you might see an error code. Here is a list of known MicroPython error codes and explanations from *CPython*:
+```bash
+1 EPERM Operation not permitted
+2 ENOENT No such file or directory
+5 EIO Input/output error
+9 EBADF Bad file descriptor
+11 EDEADLK Resource deadlock avoided
+12 ENOMEM Cannot allocate memory
+13 EACCES Permission denied
+17 EEXIST File exists
+19 ENODEV Operation not supported by device
+21 EISDIR Is a directory
+22 EINVAL Invalid argument
+95 EMULTIHOP EMULTIHOP (Reserved)
+98 ENOSR No STREAM resources
+103 ENOPOLICY Policy not found
+104 ENOTRECOVERABLE State not recoverable
+105 EOWNERDEAD Previous owner died
+```
+
+## Minimal Shell Using upysh
+In this folder is a program called *upysh.py*. It has a minimal set of shell commands which can be quite useful:
+```python
+upysh is intended to be imported using:
+from upysh import *
+
+To see this help text again, type "man".
+
+upysh commands:
+clear, ls, ls(...), head(...), cat(...), newfile(...)
+cp('src', 'dest'), mv('old', 'new'), rm(...)
+pwd, cd(...), mkdir(...), rmdir(...), tree(...), du(...)
+```
+The last two commands came from [here](https://forum.micropython.org/viewtopic.php?t=7550) and can be quite useful!
