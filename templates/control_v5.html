@@ -1,10 +1,11 @@
-{% args colors, pins, states%}
+{% args labels, pins, states%}
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="marx.css">
+    <link rel="stylesheet" href="style.css">
     <style>
         table,
         td,
@@ -23,53 +24,24 @@
         <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
       </figure>
 
-      <table>
-          <thead>
-              <tr>
-                  <th colspan="2">LED Demo Pins</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                  <th>Color</td>
-                  <th>Pico Pin</td>
-              </tr>
-              <tr>
-                  <td>{{ colors[0] }}</td>
-                  <td>{{ pins[0] }}</td>
-              </tr>
-              <tr>
-                  <td>{{ colors[1] }}</td>
-                  <td>{{ pins[1] }}</td>
-              </tr>
-              <tr>
-                  <td>{{ colors[2] }}</td>
-                  <td>{{ pins[2] }}</td>
-              </tr>
-              <tr>
-                  <td>{{ colors[3] }}</td>
-                  <td>{{ pins[3] }}</td>
-              </tr>
-          </tbody>
-      </table>
       <form action="" method="POST">
 
         <label ><strong>Choose LED(s):</strong></label>
         <label >
-          <input type="checkbox" name="led" value="{{ colors[0] }}" {{ states[0] }}>
-          {{ colors[0] }}
+          <input type="checkbox" name="led" value="{{ labels[0] }}" {{ states[0] }}>
+          {{ labels[0] }}
         </label>
         <label >
-          <input type="checkbox" name="led" value="{{ colors[1] }}" {{ states[1] }}>
-          {{ colors[1] }}
+          <input type="checkbox" name="led" value="{{ labels[1] }}" {{ states[1] }}>
+          {{ labels[1] }}
         </label>
         <label >
-          <input type="checkbox" name="led" value="{{ colors[2] }}" {{ states[2] }}>
-          {{ colors[2] }}
+          <input type="checkbox" name="led" value="{{ labels[2] }}" {{ states[2] }}>
+          {{ labels[2] }}
         </label>
         <label >
-          <input type="checkbox" name="led" value="{{ colors[3] }}" {{ states[3] }}>
-          {{ colors[3] }}
+          <input type="checkbox" name="led" value="{{ labels[3] }}" {{ states[3] }}>
+          {{ labels[3] }}
         </label>
 
         <div align="left">
@@ -77,6 +49,37 @@
         </div>
 
       </form>
+      <div class="div-1"></div>
+
+      <table>
+          <thead>
+              <tr>
+                  <th colspan="2">LED/Pin Assignments</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <th>Label</td>
+                  <th>Pico Pin</td>
+              </tr>
+              <tr>
+                  <td>{{ labels[0] }}</td>
+                  <td>{{ pins[0] }}</td>
+              </tr>
+              <tr>
+                  <td>{{ labels[1] }}</td>
+                  <td>{{ pins[1] }}</td>
+              </tr>
+              <tr>
+                  <td>{{ labels[2] }}</td>
+                  <td>{{ pins[2] }}</td>
+              </tr>
+              <tr>
+                  <td>{{ labels[3] }}</td>
+                  <td>{{ pins[3] }}</td>
+              </tr>
+          </tbody>
+      </table>
 
     </main>
   </body>

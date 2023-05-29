@@ -48,7 +48,7 @@ PicoW_pins = [[0, 'Not a pin'],     # 0 Index, not a valid pin
               [0, 'VSYS'],
               [0, 'VBUS']         # Pin 40
               ]
-colors = []
+labels = []
 pins = []
 gpio = []
 states = []
@@ -56,30 +56,30 @@ levels = []
 
 
 def set_leds(r):
-    global colors, pins, gpio, states, levels
+    global labels, pins, gpio, states, levels
 
-    colors.append(r.get('color_0'))
+    labels.append(r.get('color_0'))
     pins.append(int(r.get('pin_0')))
     gpio.append(PicoW_pins[int(r.get('pin_0'))][0])
     states.append('')
     levels.append(0)
     Pin(gpio[0], Pin.OUT, value=0)
 
-    colors.append(r.get('color_1'))
+    labels.append(r.get('color_1'))
     pins.append(int(r.get('pin_1')))
     gpio.append(PicoW_pins[int(r.get('pin_1'))][0])
     states.append('')
     levels.append(0)
     Pin(gpio[1], Pin.OUT, value=0)
 
-    colors.append(r.get('color_2'))
+    labels.append(r.get('color_2'))
     pins.append(int(r.get('pin_2')))
     gpio.append(PicoW_pins[int(r.get('pin_2'))][0])
     states.append('')
     levels.append(0)
     Pin(gpio[2], Pin.OUT, value=0)
 
-    colors.append(r.get('color_3'))
+    labels.append(r.get('color_3'))
     pins.append(int(r.get('pin_3')))
     gpio.append(PicoW_pins[int(r.get('pin_3'))][0])
     states.append('')
@@ -88,14 +88,14 @@ def set_leds(r):
 
 
 def control_led(r_leds):
-    global colors, states, gpio
+    global labels, states, gpio
     if len(r_leds) == 0:
         for i in range(4):
             Pin(gpio[i], Pin.OUT, value=0)
             states[i] = ''
     else:
         for i in range(4):
-            if colors[i] in r_leds:
+            if labels[i] in r_leds:
                 Pin(gpio[i], Pin.OUT, value=1)
                 states[i] = 'checked'
             else:
@@ -121,6 +121,10 @@ def web_server():
     def marx(request):
         return send_file('templates/marx.css', max_age=31536000)
 
+    @ app.route('style.css')
+    def style(request):
+        return send_file('templates/style.css', max_age=31536000)
+
     @ app.post('/control.html')
     def control(request):
         global leds
@@ -128,7 +132,7 @@ def web_server():
             set_leds(request.form)
         else:
             control_led(request.form.getlist('led'))
-        return render_template('control.html', colors, pins, states)
+        return render_template('control.html', labels, pins, states)
 
     @ app.get('/')
     def index(request):
