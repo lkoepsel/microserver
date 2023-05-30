@@ -771,3 +771,13 @@ tfoot td {
   font-style: italic;
   padding: var(--md-pad) var(--xs-pad);
 }
+
+/* Added
+  * ========================================================================== */
+/**
+  * Changes added to support specific projects
+  */
+.div-1 {
+  background-color: white; 
+  height: 50px;
+}

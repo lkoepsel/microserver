@@ -121,10 +121,6 @@ def web_server():
     def marx(request):
         return send_file('templates/marx.css', max_age=31536000)
 
-    @ app.route('style.css')
-    def style(request):
-        return send_file('templates/style.css', max_age=31536000)
-
     @ app.post('/control.html')
     def control(request):
         global leds

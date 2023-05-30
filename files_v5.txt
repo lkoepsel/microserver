@@ -12,6 +12,4 @@ utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
 !templates/index_v5.html,templates/index.html
-!templates/configure_v5.tpl,templates/configure.tpl
-!templates/configured_v5.tpl,templates/configured.tpl
-!templates/control_v5.tpl,templates/control.tpl
+!templates/control_v5.html,templates/control.html

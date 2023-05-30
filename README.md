@@ -20,7 +20,7 @@ Fixes the user experience to allow for any number of the four LED's to be switch
 Adds information to the four LED's by providing documentation as to the color/pin combination expected. This adds using a template file with variables, expanding on the user experience.
 
 ### Version 5
-Provides the capability for the user to set both the color and pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard.
+Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
 ## Additional Files Required
 ### secrets.py
 This file contains the SSID and password of your desired wireless LAN connection:
