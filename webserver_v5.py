@@ -52,38 +52,33 @@ labels = []
 pins = []
 gpio = []
 states = []
-levels = []
 
 
 def set_leds(r):
-    global labels, pins, gpio, states, levels
+    global labels, pins, gpio, states
 
     labels.append(r.get('color_0'))
     pins.append(int(r.get('pin_0')))
     gpio.append(PicoW_pins[int(r.get('pin_0'))][0])
     states.append('')
-    levels.append(0)
     Pin(gpio[0], Pin.OUT, value=0)
 
     labels.append(r.get('color_1'))
     pins.append(int(r.get('pin_1')))
     gpio.append(PicoW_pins[int(r.get('pin_1'))][0])
     states.append('')
-    levels.append(0)
     Pin(gpio[1], Pin.OUT, value=0)
 
     labels.append(r.get('color_2'))
     pins.append(int(r.get('pin_2')))
     gpio.append(PicoW_pins[int(r.get('pin_2'))][0])
     states.append('')
-    levels.append(0)
     Pin(gpio[2], Pin.OUT, value=0)
 
     labels.append(r.get('color_3'))
     pins.append(int(r.get('pin_3')))
     gpio.append(PicoW_pins[int(r.get('pin_3'))][0])
     states.append('')
-    levels.append(0)
     Pin(gpio[3], Pin.OUT, value=0)
 
 
