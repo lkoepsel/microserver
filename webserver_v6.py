@@ -95,12 +95,9 @@ def set_leds(r):
                 '')
     Pin(led_3.gpio, Pin.OUT, value=0)
     leds = [led_0, led_1, led_2, led_3]
-    for led in leds:
-        print(f"{repr(led)}")
 
 
 def control_led(r_leds):
-    global leds, led_0, led_1, led_2, led_3
     if len(r_leds) == 0:
         for led in leds:
             Pin(led.gpio, Pin.OUT, value=0)

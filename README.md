@@ -25,7 +25,7 @@ Provides the capability for the user to set both the label for the color and the
 ### Version 6
 Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), which I believe I prefer. The goal of *mvp* is to immediately provide a *minimum-viable-product* web page which looks *clean*. I believe it is closer to what I was looking to achieve than what I found in *marx*. A [tutorial on mvp.css](https://calmcode.io/shorts/mvp.css.html).
 
-I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *Led*. It does simplify the setup and provides better slighly better self-documentation led_0.label instead of label[0].
+I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *Led*. It does simplify the setup and provides better slighly better self-documentation led_0.label instead of label[0]. Added GPIO numbers into table as well, for confirming programming.
 
 
 ## Additional Files Required

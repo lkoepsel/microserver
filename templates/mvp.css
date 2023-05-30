@@ -478,7 +478,8 @@ table thead th:last-child {
 
 table thead th:first-child,
 table tr td:first-child {
-    text-align: var(--justify-normal);
+    text-align: center;
+/*    text-align: var(--justify-normal);*/
 }
 
 table tr:nth-child(even) {
