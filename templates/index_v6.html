@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="mvp.css">
+    <title>Pico W</title>
+  </head>
+  <body>
+    <main>
+      <h1> Pico W LED Demo </h1>
+      <figure>
+        <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
+      </figure>
+      <form action="control.html" method="POST">
+
+        <label ><strong>Enter LED Label and Pico Pin:</strong></label>
+        <input class="led_label" type="text" id="pin1" name="color_0" required
+            minlength="3" maxlength="20" size="10" value="Yellow" >
+
+        <input class="led_label" type="number" name="pin_0" list="defaultNumbers" value="4" />
+        <span class="validity"></span>
+        <datalist id="defaultNumbers">
+          <option value="4"></option>
+          <option value="5"></option>
+          <option value="6"></option>
+          <option value="7"></option>
+          <option value="9"></option>
+          <option value="10"></option>
+          <option value="11"></option>
+          <option value="12"></option>
+          <option value="14"></option>
+          <option value="15"></option>
+          <option value="16"></option>
+          <option value="17"></option>
+          <option value="19"></option>
+          <option value="20"></option>
+          <option value="21"></option>
+          <option value="22"></option>
+          <option value="24"></option>
+          <option value="25"></option>
+          <option value="26"></option>
+          <option value="27"></option>
+          <option value="29"></option>
+        </datalist>
+
+        <input  class="led_label" type="text" id="pin2" name="color_1" required
+          minlength="3" maxlength="20" size="10" value="Green" >
+        <input class="led_label" type="number" name="pin_1" list="defaultNumbers" value="20" />
+        <span class="validity"></span>
+        <datalist id="defaultNumbers">
+          <option value="4"></option>
+          <option value="5"></option>
+          <option value="6"></option>
+          <option value="7"></option>
+          <option value="9"></option>
+          <option value="10"></option>
+          <option value="11"></option>
+          <option value="12"></option>
+          <option value="14"></option>
+          <option value="15"></option>
+          <option value="16"></option>
+          <option value="17"></option>
+          <option value="19"></option>
+          <option value="20"></option>
+          <option value="21"></option>
+          <option value="22"></option>
+          <option value="24"></option>
+          <option value="25"></option>
+          <option value="26"></option>
+          <option value="27"></option>
+          <option value="29"></option>
+        </datalist>
+
+        <input class="led_label" type="text" id="pin3" name="color_2" required
+          minlength="3" maxlength="20" size="10" value="Red" >
+        <input class="led_label" type="number" name="pin_2" list="defaultNumbers" value="21" />
+        <span class="validity"></span>
+        <datalist id="defaultNumbers">
+          <option value="4"></option>
+          <option value="5"></option>
+          <option value="6"></option>
+          <option value="7"></option>
+          <option value="9"></option>
+          <option value="10"></option>
+          <option value="11"></option>
+          <option value="12"></option>
+          <option value="14"></option>
+          <option value="15"></option>
+          <option value="16"></option>
+          <option value="17"></option>
+          <option value="19"></option>
+          <option value="20"></option>
+          <option value="21"></option>
+          <option value="22"></option>
+          <option value="24"></option>
+          <option value="25"></option>
+          <option value="26"></option>
+          <option value="27"></option>
+          <option value="29"></option>
+        </datalist>
+
+        <input  class="led_label" type="text" id="pin4" name="color_3" required
+          minlength="3" maxlength="20" size="10" value="Blue" >
+        <input class="led_label" type="number" name="pin_3" list="defaultNumbers" value="29" />
+        <span class="validity"></span>
+        <datalist id="defaultNumbers">
+          <option value="4"></option>
+          <option value="5"></option>
+          <option value="6"></option>
+          <option value="7"></option>
+          <option value="9"></option>
+          <option value="10"></option>
+          <option value="11"></option>
+          <option value="12"></option>
+          <option value="14"></option>
+          <option value="15"></option>
+          <option value="16"></option>
+          <option value="17"></option>
+          <option value="19"></option>
+          <option value="20"></option>
+          <option value="21"></option>
+          <option value="22"></option>
+          <option value="24"></option>
+          <option value="25"></option>
+          <option value="26"></option>
+          <option value="27"></option>
+          <option value="29"></option>
+        </datalist>
+
+        <div align="left">
+          <input type="submit" value="Setup">
+        </div>
+
+      </form>
+
+    </main>
+  </body>
+</html>

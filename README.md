@@ -21,6 +21,13 @@ Adds information to the four LED's by providing documentation as to the color/pi
 
 ### Version 5
 Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
+
+### Version 6
+Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), which I believe I prefer. The goal of *mvp* is to immediately provide a *minimum-viable-product* web page which looks *clean*. I believe it is closer to what I was looking to achieve than what I found in *marx*. A [tutorial on mvp.css](https://calmcode.io/shorts/mvp.css.html).
+
+I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *Led*. It does simplify the setup and provides better slighly better self-documentation led_0.label instead of label[0].
+
+
 ## Additional Files Required
 ### secrets.py
 This file contains the SSID and password of your desired wireless LAN connection:
@@ -83,7 +90,7 @@ I've found several programs on the Mac which won't work with a Pico (*when it is
 The *Pico W* doesn't have a reset button, which means there are two alternatives. First, power cycle the Pico by removing the USB cable or second, add a reset button. I find the second method preferable and have described the process [here](https://wellys.com/posts/rp2040_micropython_1/#reset).
 
 ## Program Size
-This program hasn't been optimized for size as its a capability demo, not a production program. I have switched from bulma css framework (200K) to marx css frame work (10k).
+This program hasn't been optimized for size as its a capability demo, not a production program. I have switched from bulma css framework (200K) to [marx css framework](https://mblode.github.io/marx/) (10k). *See note on Version 6 regarding mvp.css.*
 
 ## Automation to Copy Project to Board
 The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board.

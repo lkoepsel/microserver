@@ -1,0 +1,15 @@
+# webserver_v6 files
+/templates
+/utemplate
+computer.svg
+microdot.py
+microdot_utemplate.py
+secrets.py
+wlan.py
++webserver_v6.py
+templates/mvp.css
+utemplate/compiled.py
+utemplate/recompile.py
+utemplate/source.py
+!templates/index_v6.html,templates/index.html
+!templates/control_v6.html,templates/control.html

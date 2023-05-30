@@ -1,0 +1,75 @@
+{% args led_0, led_1, led_2, led_3%}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="mvp.css">
+    <title>Pico W</title>
+  </head>
+  <body>
+    <main>
+      <h1> Pico W LED Demo </h1>
+      <figure>
+        <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
+      </figure>
+
+      <form action="" method="POST">
+
+        <label ><strong>Choose LED(s):</strong></label>
+        <label >
+          <input type="checkbox" name="led" value="{{ led_0.label }}" {{ led_0.state }}>
+          {{ led_0.label }}
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="{{ led_1.label }}" {{ led_1.state }}>
+          {{ led_1.label }}
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="{{ led_2.label }}" {{ led_2.state }}>
+          {{ led_2.label }}
+        </label>
+        <label >
+          <input type="checkbox" name="led" value="{{ led_3.label }}" {{ led_3.state }}>
+          {{ led_3.label }}
+        </label>
+
+        <div align="left">
+          <input type="submit" value="Lights!">
+        </div>
+
+      </form>
+
+      <table>
+          <thead>
+              <tr>
+                  <th colspan="2">LED/Pin Assignments</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <th>Label</td>
+                  <th>Pico Pin</td>
+              </tr>
+              <tr>
+                  <td>{{ led_0.label }}</td>
+                  <td>{{ led_0.pin }}</td>
+              </tr>
+              <tr>
+                  <td>{{ led_1.label }}</td>
+                  <td>{{ led_1.pin }}</td>
+              </tr>
+              <tr>
+                  <td>{{ led_2.label }}</td>
+                  <td>{{ led_2.pin }}</td>
+              </tr>
+              <tr>
+                  <td>{{ led_3.label }}</td>
+                  <td>{{ led_3.pin }}</td>
+              </tr>
+          </tbody>
+      </table>
+
+    </main>
+  </body>
+</html>
