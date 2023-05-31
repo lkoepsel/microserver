@@ -4,6 +4,7 @@
 computer.svg
 microdot.py
 microdot_utemplate.py
+pins.py
 secrets.py
 wlan.py
 +webserver_v7.py

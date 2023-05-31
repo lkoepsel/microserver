@@ -3,51 +3,7 @@ from machine import Pin
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template
 import sys
-
-
-# PicoW Pin Numbering
-PicoW_pins = [[0, 'Not a pin'],     # 0 Index, not a valid pin
-              [0, 'UART0 TX'],      # Pin 1
-              [0, 'UART0 RX'],
-              [0, 'GND'],
-              [2, 'GP2'],
-              [3, 'GP3'],
-              [4, 'GP4'],
-              [5, 'GP5'],
-              [0, 'GND'],
-              [6, 'GP6'],
-              [7, 'GP7'],         # Pin 10
-              [8, 'GP8'],
-              [9, 'GP9'],
-              [0, 'GND'],
-              [10, 'GP10'],
-              [11, 'GP11'],
-              [12, 'GP12'],
-              [13, 'GP13'],
-              [0, 'GND'],
-              [14, 'GP14'],
-              [15, 'GP15'],         # Pin 20
-              [16, 'GP16'],
-              [17, 'GP17'],
-              [0, 'GND'],
-              [18, 'GP18'],
-              [19, 'GP19'],
-              [20, 'GP20'],
-              [21, 'GP21'],
-              [0, 'GND'],
-              [22, 'GP22'],
-              [0, 'RUN'],         # Pin 30
-              [0, 'ADC0'],
-              [0, 'ADC1'],
-              [0, 'AGND'],
-              [0, 'ADC2'],
-              [0, 'ADC_REF'],
-              [0, '3V3(OUT)'],
-              [0, '3V3_EN'],
-              [0, 'GND'],
-              [0, 'VSYS'],
-              [0, 'VBUS']         # Pin 40
-              ]
+from pins import PicoW_pins
 
 
 class Led(object):
@@ -66,38 +22,25 @@ led_0 = Led
 led_1 = Led
 led_2 = Led
 led_3 = Led
-leds = []
+leds = [led_0, led_1, led_2, led_3]
 
 
 def set_leds(r):
-    global leds, led_0, led_1, led_2, led_3
-    led_0 = Led(r.get('color_0'),
-                int(r.get('pin_0')),
-                PicoW_pins[int(r.get('pin_0'))][0],
-                '')
-    Pin(led_0.gpio, Pin.OUT, value=0)
+    global leds
 
-    led_1 = Led(r.get('color_1'),
-                int(r.get('pin_1')),
-                PicoW_pins[int(r.get('pin_1'))][0],
-                '')
-    Pin(led_1.gpio, Pin.OUT, value=0)
+    labels = r.getlist('label')
+    pins = r.getlist('pin')
 
-    led_2 = Led(r.get('color_2'),
-                int(r.get('pin_2')),
-                PicoW_pins[int(r.get('pin_2'))][0],
-                '')
-    Pin(led_2.gpio, Pin.OUT, value=0)
-
-    led_3 = Led(r.get('color_3'),
-                int(r.get('pin_3')),
-                PicoW_pins[int(r.get('pin_3'))][0],
-                '')
-    Pin(led_3.gpio, Pin.OUT, value=0)
-    leds = [led_0, led_1, led_2, led_3]
+    for i, label in enumerate(labels):
+        leds[i] = Led(label,
+                      int(pins[i]),
+                      PicoW_pins[int(pins[i])][0],
+                      '')
+        Pin(leds[i].gpio, Pin.OUT, value=0)
 
 
 def control_led(r_leds):
+    global leds
     if len(r_leds) == 0:
         for led in leds:
             Pin(led.gpio, Pin.OUT, value=0)
@@ -113,7 +56,6 @@ def control_led(r_leds):
 
 
 def web_server():
-    global led_0, led_1, led_2, led_3
     # Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
     # Will not differeniate between Pico and Pico W!
     if hasattr(sys.implementation, '_machine'):
@@ -133,7 +75,7 @@ def web_server():
     @ app.post('/control.html')
     def control(request):
         global leds
-        if 'color_0' in request.form.keys():
+        if len(request.form.getlist('label')) == 4:
             set_leds(request.form)
         else:
             control_led(request.form.getlist('led'))

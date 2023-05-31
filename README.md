@@ -36,7 +36,7 @@ Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), wh
 I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *Led*. It does simplify the setup and provides better slighly better self-documentation led_0.label instead of label[0]. Added GPIO numbers into table as well, for confirming programming.
 
 ### Version 7
-Used the combination of templates and variables to refactor the webpages to be far more simple. 
+Used the combination of templates and variables to refactor the server program and webpages to be far more simple. The *microdot* *POST* can return an array of values, as compared to each value labeled separately. (*I missed this early on.*) Therefore, I'm able to use an array on getting the values and printing the values, simplifying the code.
 
 ## Additional Files Required
 ### secrets.py
@@ -85,6 +85,30 @@ Starting sync server on 0.0.0.0:5001...
 ```
 In this case, the password was in-correct, resulting in a *BADAUTH* or *bad authorization* error. The following line *Starting sync...* is irelevant as there isn't an IP address to connect.
 
+## Resolving Program Errors
+Sometimes, a program error will prevent any output from the Pico. This makes it difficult to debug the problem. The solution is to:
+1. Start your serial program
+2. Press *Ctrl-C* to enter the REPL
+then enter `from main import *`. Then the startup error will more than likely print.
+Here is an example:
+```python
+>>> from main import *
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "main.py", line 6, in <module>
+ImportError: no module named 'pins.py'
+```
+In this error, I attempted to import a module with the full name, I needed to drop the ".py". If you continue to have problems, you can start the program by entering "web_server()" as in this example:
+```python
+>>> from main import *
+>>> web_server()
+IP Address: 10.0.1.10
+MAC Address: 28:cd:c1:08:a9:7c
+Channel: 1
+SSID: Demo
+TX Power: 31
+Starting sync server on 0.0.0.0:5001...
+```
 ## Serial Programs
 I develop on a Mac and use a paid program called [Serial](https://www.decisivetactics.com/products/serial/). It is quite robust and is able to connect to everything I've attempted. That said, you might not want to pay for Serial (or have a Mac).
 
