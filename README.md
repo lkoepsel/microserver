@@ -1,17 +1,25 @@
 # Pico W LED Demo
-The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small web server software called [microdot](), which was written for [MicroPython](), running on a Pico W. This demo is intended to serve as a simple example as to how to develop a user-facing webpage running on the Pico W.
+The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small web server called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](), running on a Pico W. This demo is intended to serve as a simple iterative example as to how to develop a user-facing webpage running on the Pico W.
 ## Versions and Installation
-There are different versions, *_v1*, *_v2*, *_v3* etc. 
+If you already have files on your Pico W, it might help to "*wipe*" your Pico W file system (reformat it) to reduce possible program conflicts. **Be sure you have saved any program files on your PC, before doing so!** See *"Tool to Erase...* below for more information.
 
-Initially run `mpbuild.py files_v1.txt`, this will setup the board with version 1 of the software. See "Automation..." below for more information.
+There are different versions, *_v1*, *_v2*, *_v3* etc. of the web server software. Each one expands on the capabilities of the previous version.
 
-To move to the next version, run [`mpr littlefs_rp2`](https://wellys.com/posts/rp2040_mpremote/#config) followed by `mpbuild files_vn.txt`, with *n* as the desired build version.
+Run this command to install the first version of files on the board.
+```
+mpbuild.py files_v1.txt
+``` 
 
+To move to the next version with *n* as the desired build version. 
+```
+mpr littlefs_rp2
+mpbuild files_vn.txt 
+```
 ### Version 1
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
 
 ### Version 2
-Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for several values.
+Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for using several values.
 
 ### Version 3
 Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.
@@ -27,6 +35,8 @@ Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), wh
 
 I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *Led*. It does simplify the setup and provides better slighly better self-documentation led_0.label instead of label[0]. Added GPIO numbers into table as well, for confirming programming.
 
+### Version 7
+Used the combination of templates and variables to refactor the webpages to be far more simple. 
 
 ## Additional Files Required
 ### secrets.py
@@ -42,7 +52,7 @@ A simple text file called *secrets.py* with the above format and the correct SSI
 To run on a Pico W:
 
 1. Ensure secrets.py has the desired SSID and password for your WiFi
-1. Apply the version instructions above
+1. Build the desired version, using instructions above
 1. Start a serial program (see Note below)
 1. Press Reset or cycle power on your Pico W
 1. Use the IP address provided via the serial port
@@ -95,12 +105,9 @@ This program hasn't been optimized for size as its a capability demo, not a prod
 ## Automation to Copy Project to Board
 The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board.
 ```bash
-mpbuild.py -h
 usage: mpbuild.py [-h] [-n] [-v] build
 
-Reads names of files from build file in current folder. Copies files to attached MicroPython
-board. Use --dry-run or -n to print commands, instead of execution. Filenames can NOT have blanks
-in their names.
+Reads names of files from build file in current folder. Copies files to attached MicroPython board. Use --dry-run or -n to print commands, instead of execution. Filenames can NOT have blanks in their names.
 
 positional arguments:
   build          file to use for building Pico
@@ -141,7 +148,7 @@ When using Thonny or the REPL, frequently you might see an error code. Here is a
 ```
 
 ## Minimal Shell Using upysh
-In this folder is a program called *upysh.py*. It has a minimal set of shell commands which can be quite useful:
+In this folder is a program called *upysh.py*. It has a minimal set of shell commands which can be quite useful. I've found I'm able to use these commands instead of spinning up Thonny, when I need to see something on the board. Use the MicroPython REPL and follow below:
 ```python
 upysh is intended to be imported using:
 from upysh import *

@@ -1,0 +1,56 @@
+{% args leds%}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="mvp.css">
+    <title>Pico W</title>
+  </head>
+  <body>
+    <main>
+      <h1> Pico W LED Demo </h1>
+      <figure>
+        <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
+      </figure>
+
+      <form action="" method="POST">
+
+        <label ><strong>Choose LED(s):</strong></label>
+          {% for led in leds %}
+            <label >
+            <input type="checkbox" name="led" value="{{ led.label }}" {{ led.state }}>
+            {{ led.label }}
+            </label>
+          {% endfor %}
+        <div>
+          <input type="submit" value="Lights!">
+        </div>
+
+      </form>
+
+      <table>
+          <thead>
+              <tr>
+                  <th colspan="3">LED/Pin Assignments</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <th>Label</td>
+                  <th>Pico Pin</td>
+                  <th>Pico GPIO</td>
+              </tr>
+              {% for led in leds %}
+                <tr>
+                    <td>{{ led.label }}</td>
+                    <td>{{ led.pin }}</td>
+                    <td>{{ led.gpio }}</td>
+                </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+
+    </main>
+  </body>
+</html>
