@@ -49,44 +49,43 @@ def set_led(leds):
                 led_state[3] = ''
 
 
-# Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
-# Will not differeniate between Pico and Pico W!
-if hasattr(sys.implementation, '_machine'):
-    from wlan import connect
-    if not (connect()):
-        print(f"wireless connection failed")
-        sys.exit()
+def web_server():
+    # Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
+    # Will not differeniate between Pico and Pico W!
+    if hasattr(sys.implementation, '_machine'):
+        from wlan import connect
+        if not (connect()):
+            print(f"wireless connection failed")
+            sys.exit()
+
+    app = Microdot()
+    Response.default_content_type = 'text/html'
+    Request.socket_read_timeout = None
+
+    @app.route('marx.css')
+    def marx(request):
+        return send_file('templates/marx.css', max_age=31536000)
+
+    @app.route('/', methods=['GET', 'POST'])
+    def index(request):
+        global led_state
+        if request.method == 'POST':
+            set_led(request.form.getlist('led'))
+            return render_template('index.html', led_state)
+        else:
+            return render_template('index.html', led_state)
+
+    @app.get('computer.svg')
+    def computer_svg(request):
+        return send_file('./computer.svg',
+                         content_type='image/svg+xml', max_age=31536000)
+
+    @app.get('favicon.png')
+    def favicon(request):
+        return send_file('./favicon.png', content_type='image/png')
+
+    app.run(debug=True)
 
 
-app = Microdot()
-Response.default_content_type = 'text/html'
-Request.socket_read_timeout = None
-
-
-@app.route('marx.css')
-def marx(request):
-    return send_file('templates/marx.css', max_age=31536000)
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index(request):
-    global led_state
-    if request.method == 'POST':
-        set_led(request.form.getlist('led'))
-        return render_template('index.html', led_state)
-    else:
-        return render_template('index.html', led_state)
-
-
-@app.get('computer.svg')
-def computer_svg(request):
-    return send_file('./computer.svg',
-                     content_type='image/svg+xml', max_age=31536000)
-
-
-@app.get('favicon.png')
-def favicon(request):
-    return send_file('./favicon.png', content_type='image/png')
-
-
-app.run(debug=True)
+if __name__ == '__main__':
+    web_server()
