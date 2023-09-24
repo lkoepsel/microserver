@@ -7,14 +7,14 @@
 # 1 line starting with '+' will be copied to main.py
 # directory lines must appear prior to the files in the directories
 # all other lines are considered valid files in the current directory
-# PYBOARD_DEVICE environmental variable must be set to board serial port
-
+# local_env.py file must be contain 'port' set to board serial port
+# port = '/dev/cu.usbmodem31401'
 
 import argparse
 import re
 from mpremote.pyboard import Pyboard
 import sys
-import os
+import local_env
 
 
 def show_progress_bar(size, total_size, op="copying"):
@@ -58,7 +58,7 @@ parser.add_argument('-v', "--verbose", action='store_true', default=False,
 args = parser.parse_args()
 
 
-pyb = Pyboard(os.environ['PYBOARD_DEVICE'], 115200)
+pyb = Pyboard(local_env.port, 115200)
 pyb.enter_raw_repl()
 with open(args.build, 'r') as files:
     file_list = files.readlines()
@@ -70,11 +70,11 @@ for file in file_list:
     # line begins with a slash, create a dir using the following text
     if folder.match(file):
         d = file.strip()
+        dirs.append(d)
         if args.dryrun:
             print(f"pyb.fs_mkdir({d})")
         else:
             pyb.fs_mkdir(d)
-            dirs.append(d)
 
     # line begins with a #, ignore the line its a comment
     elif comment.match(file):
