@@ -1,18 +1,19 @@
 # Pico W LED Demo
 The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small web server called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](), running on a Pico W. This demo is intended to serve as a simple iterative example as to how to develop a user-facing webpage running on the Pico W.
 ## Versions and Installation
-If you already have files on your Pico W, it might help to "*wipe*" your Pico W file system (reformat it) to reduce possible program conflicts. **Be sure you have saved any program files on your PC, before doing so!** See *"Tool to Erase...* below for more information.
+If you already have files on your Pico W, you will need to "*wipe*" your Pico W file system (reformat it) to reduce possible program conflicts. **Be sure you have saved any program files on your PC, before doing so!** See *"Tool to Erase...* below for more information.
 
 There are different versions, *_v1*, *_v2*, *_v3* etc. of the web server software. Each one expands on the capabilities of the previous version.
 
-Run this command to install the first version of files on the board.
+Run these two commands to install the first version of files on the board.
 ```
+mpr littlefs_rp2 # this command will erase ALL program files on Pico!!
 mpbuild.py files_v1.txt
 ``` 
 
 To move to the next version with *n* as the desired build version. 
 ```
-mpr littlefs_rp2
+mpr littlefs_rp2 # this command will erase ALL program files on Pico!!
 mpbuild files_vn.txt 
 ```
 ### Version 1
@@ -31,12 +32,14 @@ Adds information to the four LED's by providing documentation as to the color/pi
 Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
 
 ### Version 6
-Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), which I believe I prefer. The goal of *mvp* is to immediately provide a *minimum-viable-product* web page which looks *clean*. I believe it is closer to what I was looking to achieve than what I found in *marx*. A [tutorial on mvp.css](https://calmcode.io/shorts/mvp.css.html).
+Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), which I prefer. The goal of *mvp* is to immediately provide a *minimum-viable-product* web page which looks *clean*. I believe it is closer to what I was looking to achieve than what I found in *marx*. A [tutorial on mvp.css](https://calmcode.io/shorts/mvp.css.html). It is also half the size of *marx.css*.
 
 I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *Led*. It does simplify the setup and provides better slighly better self-documentation led_0.label instead of label[0]. Added GPIO numbers into table as well, for confirming programming.
 
 ### Version 7
 Used the combination of templates and variables to refactor the server program and webpages to be far more simple. The *microdot* *POST* can return an array of values, as compared to each value labeled separately. (*I missed this early on.*) Therefore, I'm able to use an array on getting the values and printing the values, simplifying the code.
+
+Simplifying the code makes a signficant difference in three areas, easier to maintain, 20% smaller in size and much easier to expand. This is the value in performing that "*one more iteration in factoring the code*".
 
 ## Additional Files Required
 ### secrets.py
@@ -110,9 +113,11 @@ TX Power: 31
 Starting sync server on 0.0.0.0:5001...
 ```
 ## Serial Programs
-I develop on a Mac and use a paid program called [Serial](https://www.decisivetactics.com/products/serial/). It is quite robust and is able to connect to everything I've attempted. That said, you might not want to pay for Serial (or have a Mac).
+I develop on a Mac and use [CoolTerm](https://freeware.the-meiers.org). It is quite robust and is able to connect to everything I've attempted. Another amazing aspect is that it can be automated using AppleScript. I'll provide a link to demonstrate this at a later date.
 
-My second favorite "connect to everything" serial program is the serial monitor in the Arduino [Legacy IDE (1.8.X)](https://www.arduino.cc/en/software). I've found it is easy to configure AND it seems robust enough to connect to everything I'v attempted as well.
+My second favorite "connect to everything" serial program is a paid program ($40) Serial [https://www.decisivetactics.com/products/serial/). I've found it is easy to configure AND it is robust enough to connect to everything I'v attempted as well.
+
+Two other programs to consider are [*tio*](https://github.com/tio/tio) and [*miniterm*](https://pyserial.readthedocs.io/en/latest/tools.html).
 
 I've found several programs on the Mac which won't work with a Pico (*when it is re-booted...*):
 * *cu* - a common, simple program which crashes when the Pico is rebooted
@@ -124,7 +129,7 @@ I've found several programs on the Mac which won't work with a Pico (*when it is
 The *Pico W* doesn't have a reset button, which means there are two alternatives. First, power cycle the Pico by removing the USB cable or second, add a reset button. I find the second method preferable and have described the process [here](https://wellys.com/posts/rp2040_micropython_1/#reset).
 
 ## Program Size
-This program hasn't been optimized for size as its a capability demo, not a production program. I have switched from bulma css framework (200K) to [marx css framework](https://mblode.github.io/marx/) (10k). *See note on Version 6 regarding mvp.css.*
+This program hasn't been optimized for size as its a capability demo, not a production program. I have switched from bulma css framework (200K) to [*mvp.css*](https://andybrewer.github.io/mvp/#docs) (10k).
 
 ## Automation to Copy Project to Board
 The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board.
@@ -145,13 +150,14 @@ The program uses pyboard.py from mpremote (installed via pip), which means the P
 
 ## Tool to Erase Pico LittleFS filesystem
 Based on a [file by @jimmo](https://github.com/jimmo/dotfiles/blob/master/common/home/.config/mpremote/config.py), I am using his recommended method of erasing all of the files on a Pico. It is in my [config file](https://wellys.com/posts/rp2040_mpremote/#config) or you can use this command:
-```py
+
+```bash
 mpremote exec --no-follow  "import os, machine, rp2; os.umount('/'); bdev = rp2.Flash(); os.VfsLfs2.mkfs(bdev, progsize=256); vfs = os.VfsLfs2(bdev, progsize=256); os.mount(vfs, '/'); machine.reset()"
 ```
 **IT WILL ERASE ALL OF YOUR PROGRAM FILES ON YOUR PICO!!** It will not delete the MicroPython uf2 file.
 
 ## Error Codes
-When using Thonny or the REPL, frequently you might see an error code. Here is a list of known MicroPython error codes and explanations from *CPython*:
+When using the REPL, frequently you might see an error code. Here is a list of known MicroPython error codes and explanations from *CPython*:
 ```bash
 1 EPERM Operation not permitted
 2 ENOENT No such file or directory
