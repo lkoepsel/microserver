@@ -1,4 +1,5 @@
-# light_leds - browser-based method of controlling leds
+# light_leds_v7 - webserver to control four leds
+# refactored to simplify the program, using tuple of LEDS instead of variables
 from machine import Pin
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template

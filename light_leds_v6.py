@@ -1,4 +1,5 @@
-# light_leds - browser-based method of controlling leds
+# light_leds_v6 - webserver to control four leds
+# allows renaming of leds and pin selection
 from machine import Pin
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template
@@ -48,58 +49,72 @@ PicoW_pins = [[0, 'Not a pin'],     # 0 Index, not a valid pin
               [0, 'VSYS'],
               [0, 'VBUS']         # Pin 40
               ]
-labels = []
-pins = []
-gpio = []
-states = []
+
+
+class Led(object):
+    def __init__(self, label, pin, gpio, state):
+        self.label = label
+        self.pin = pin
+        self.gpio = gpio
+        self.state = state
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}\
+        ("{self.label}", {self.pin}, {self.gpio}, "{self.state}")'
+
+
+led_0 = Led
+led_1 = Led
+led_2 = Led
+led_3 = Led
+leds = []
 
 
 def set_leds(r):
-    global labels, pins, gpio, states
+    global leds, led_0, led_1, led_2, led_3
+    led_0 = Led(r.get('color_0'),
+                int(r.get('pin_0')),
+                PicoW_pins[int(r.get('pin_0'))][0],
+                '')
+    Pin(led_0.gpio, Pin.OUT, value=0)
 
-    labels.append(r.get('color_0'))
-    pins.append(int(r.get('pin_0')))
-    gpio.append(PicoW_pins[int(r.get('pin_0'))][0])
-    states.append('')
-    Pin(gpio[0], Pin.OUT, value=0)
+    led_1 = Led(r.get('color_1'),
+                int(r.get('pin_1')),
+                PicoW_pins[int(r.get('pin_1'))][0],
+                '')
+    Pin(led_1.gpio, Pin.OUT, value=0)
 
-    labels.append(r.get('color_1'))
-    pins.append(int(r.get('pin_1')))
-    gpio.append(PicoW_pins[int(r.get('pin_1'))][0])
-    states.append('')
-    Pin(gpio[1], Pin.OUT, value=0)
+    led_2 = Led(r.get('color_2'),
+                int(r.get('pin_2')),
+                PicoW_pins[int(r.get('pin_2'))][0],
+                '')
+    Pin(led_2.gpio, Pin.OUT, value=0)
 
-    labels.append(r.get('color_2'))
-    pins.append(int(r.get('pin_2')))
-    gpio.append(PicoW_pins[int(r.get('pin_2'))][0])
-    states.append('')
-    Pin(gpio[2], Pin.OUT, value=0)
-
-    labels.append(r.get('color_3'))
-    pins.append(int(r.get('pin_3')))
-    gpio.append(PicoW_pins[int(r.get('pin_3'))][0])
-    states.append('')
-    Pin(gpio[3], Pin.OUT, value=0)
+    led_3 = Led(r.get('color_3'),
+                int(r.get('pin_3')),
+                PicoW_pins[int(r.get('pin_3'))][0],
+                '')
+    Pin(led_3.gpio, Pin.OUT, value=0)
+    leds = [led_0, led_1, led_2, led_3]
 
 
 def control_led(r_leds):
-    global labels, states, gpio
     if len(r_leds) == 0:
-        for i in range(4):
-            Pin(gpio[i], Pin.OUT, value=0)
-            states[i] = ''
+        for led in leds:
+            Pin(led.gpio, Pin.OUT, value=0)
+            led.state = ''
     else:
-        for i in range(4):
-            if labels[i] in r_leds:
-                Pin(gpio[i], Pin.OUT, value=1)
-                states[i] = 'checked'
+        for led in leds:
+            if led.label in r_leds:
+                Pin(led.gpio, Pin.OUT, value=1)
+                led.state = 'checked'
             else:
-                Pin(gpio[i], Pin.OUT, value=0)
-                states[i] = ''
+                Pin(led.gpio, Pin.OUT, value=0)
+                led.state = ''
 
 
 def web_server():
-
+    global led_0, led_1, led_2, led_3
     # Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
     # Will not differeniate between Pico and Pico W!
     if hasattr(sys.implementation, '_machine'):
@@ -112,9 +127,9 @@ def web_server():
     Response.default_content_type = 'text/html'
     Request.socket_read_timeout = None
 
-    @ app.route('marx.css')
-    def marx(request):
-        return send_file('templates/marx.css', max_age=31536000)
+    @ app.route('mvp.css')
+    def mvp(request):
+        return send_file('templates/mvp.css', max_age=31536000)
 
     @ app.post('/control.html')
     def control(request):
@@ -123,7 +138,7 @@ def web_server():
             set_leds(request.form)
         else:
             control_led(request.form.getlist('led'))
-        return render_template('control.html', labels, pins, states)
+        return render_template('control.html', led_0, led_1, led_2, led_3)
 
     @ app.get('/')
     def index(request):

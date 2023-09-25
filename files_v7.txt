@@ -7,7 +7,7 @@ microdot_utemplate.py
 pins.py
 secrets.py
 wlan.py
-+webserver_v7.py
++light_leds_v7.py
 templates/mvp.css
 utemplate/compiled.py
 utemplate/recompile.py

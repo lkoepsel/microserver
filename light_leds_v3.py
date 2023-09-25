@@ -1,4 +1,4 @@
-# light_leds - browser-based method of controlling leds
+# light_leds_v3 - browser-based method of controlling leds
 from machine import Pin
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template
@@ -10,7 +10,6 @@ green = Pin(15, Pin.OUT)
 red = Pin(16, Pin.OUT)
 blue = Pin(22, Pin.OUT)
 led_state = ['', '', '', '']
-leds = [['yellow', 4], ['green', 20], ['red', 21], ['blue', 29]]
 
 
 def set_led(leds):
@@ -72,9 +71,9 @@ def web_server():
         global led_state
         if request.method == 'POST':
             set_led(request.form.getlist('led'))
-            return render_template('index.html', led_state, leds)
+            return render_template('index.html', led_state)
         else:
-            return render_template('index.html', led_state, leds)
+            return render_template('index.html', led_state)
 
     @app.get('computer.svg')
     def computer_svg(request):
