@@ -7,6 +7,13 @@ import sys
 from pins import PicoW_pins
 
 
+# class LED contains the attributes for each led
+# label - text for naming the led
+# pin - Pico pin number (1-40)
+# gpio - RP2040 GPIO number (see pins.py for xreference)
+# state - on (checked) or off (blank)
+# set_leds will assign values based on initial index.html form
+# control_leds will update 'state' based on control.html form
 class Led(object):
     def __init__(self, label, pin, gpio, state):
         self.label = label
@@ -24,8 +31,11 @@ led_1 = Led
 led_2 = Led
 led_3 = Led
 leds = [led_0, led_1, led_2, led_3]
+default_pins = [4, 20, 21, 29]
 
 
+# function called from index.html to setup the labels and GPIO pins for leds
+# request "r" has two lists, 'label' and 'pin'
 def set_leds(r):
     global leds
 
@@ -40,6 +50,9 @@ def set_leds(r):
         Pin(leds[i].gpio, Pin.OUT, value=0)
 
 
+# function called from control.html to turn leds on/off
+# if entry with empty list, all leds will be turned off
+# else entry with list containing assigned labels will be turned on
 def control_led(r_leds):
     global leds
     if len(r_leds) == 0:
@@ -76,26 +89,30 @@ def web_server():
     @ app.post('/control.html')
     def control(request):
         global leds
-        if len(request.form.getlist('label')) == 4:
+        # if len(labels list) > 0, its first time through
+        # set labels and pin assignments
+        if len(request.form.getlist('label')) > 0:
             set_leds(request.form)
+
+        # else, just turn the leds on/off
         else:
             control_led(request.form.getlist('led'))
         return render_template('control.html', leds)
 
     @ app.get('/')
     def index(request):
-        return send_file('templates/index.html')
+        return render_template('index.html')
 
     @ app.get('computer.svg')
     def computer_svg(request):
         return send_file('./computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
-    @ app.get('favicon.png')
-    def favicon(request):
-        return send_file('./favicon.png', content_type='image/png')
+    @ app.get('favicon.ico')
+    def favicon_ico(request):
+        return send_file('./favicon.png', max_age=31536000)
 
-    app.run(debug=True)
+    app.run(port=5001, debug=True)
 
 
 if __name__ == '__main__':

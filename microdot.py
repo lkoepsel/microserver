@@ -404,13 +404,15 @@ class Request():
         data = MultiDict()
         if len(urlencoded) > 0:
             if isinstance(urlencoded, str):
-                for k, v in [pair.split('=', 1)
-                             for pair in urlencoded.split('&') if pair]:
-                    data[urldecode_str(k)] = urldecode_str(v)
+                for kv in [pair.split('=', 1)
+                           for pair in urlencoded.split('&') if pair]:
+                    data[urldecode_str(kv[0])] = urldecode_str(kv[1]) \
+                        if len(kv) > 1 else ''
             elif isinstance(urlencoded, bytes):  # pragma: no branch
-                for k, v in [pair.split(b'=', 1)
-                             for pair in urlencoded.split(b'&') if pair]:
-                    data[urldecode_bytes(k)] = urldecode_bytes(v)
+                for kv in [pair.split(b'=', 1)
+                           for pair in urlencoded.split(b'&') if pair]:
+                    data[urldecode_bytes(kv[0])] = urldecode_bytes(kv[1]) \
+                        if len(kv) > 1 else b''
         return data
 
     @property
@@ -736,7 +738,7 @@ class URLPattern():
                 if type_ == 'string':
                     pattern = '[^/]+'
                 elif type_ == 'int':
-                    pattern = '\\d+'
+                    pattern = '-?\\d+'
                 elif type_ == 'path':
                     pattern = '.+'
                 elif type_.startswith('re:'):
@@ -1046,7 +1048,7 @@ class Microdot():
         """
         raise HTTPException(status_code, reason)
 
-    def run(self, host='0.0.0.0', port=5001, debug=False, ssl=None):
+    def run(self, host='0.0.0.0', port=5000, debug=False, ssl=None):
         """Start the web server. This function does not normally return, as
         the server enters an endless listening loop. The :func:`shutdown`
         function provides a method for terminating the server gracefully.
@@ -1059,7 +1061,7 @@ class Microdot():
                      for requests only on the internal networking interface of
                      the host.
         :param port: The port number to listen for requests. The default is
-                     port 5000. (on MBP 5001 LK 230504)
+                     port 5000.
         :param debug: If ``True``, the server logs debugging information. The
                       default is ``False``.
         :param ssl: An ``SSLContext`` instance or ``None`` if the server should
@@ -1072,7 +1074,7 @@ class Microdot():
             app = Microdot()
 
             @app.route('/')
-            def index():
+            def index(request):
                 return 'Hello, world!'
 
             app.run(debug=True)
