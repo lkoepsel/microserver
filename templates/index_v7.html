@@ -1,3 +1,4 @@
+{% args def_pins%}
 <!DOCTYPE html>
 <html>
   <head>
@@ -15,29 +16,8 @@
       <form action="control.html" method="POST">
 
         <label ><strong>Enter LED Label and Pico Pin:</strong></label>
-        <input type="text" id="pin1" name="label" required
-            minlength="3" maxlength="20" size="10" value="Yellow" >
-        <input type="number" name="pin" list="defaultNumbers" value="4" />
         
-        {% include "default_pins.tpl" %}
-
-        <input  type="text" id="pin2" name="label" required
-          minlength="3" maxlength="20" size="10" value="Green" >
-        <input type="number" name="pin" list="defaultNumbers" value="20" />
-        
-        {% include "default_pins.tpl" %}
-
-        <input type="text" id="pin3" name="label" required
-          minlength="3" maxlength="20" size="10" value="Red" >
-        <input type="number" name="pin" list="defaultNumbers" value="21" />
-        
-        {% include "default_pins.tpl" %}
-
-        <input  type="text" id="pin4" name="label" required
-          minlength="3" maxlength="20" size="10" value="Blue" >
-        <input type="number" name="pin" list="defaultNumbers" value="29" />
-        
-        {% include "default_pins.tpl" %}
+        {% include "default_pins.tpl" def_pins %}
 
         <div align="left">
           <input type="submit" value="Setup">

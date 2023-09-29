@@ -31,7 +31,10 @@ led_1 = Led
 led_2 = Led
 led_3 = Led
 leds = [led_0, led_1, led_2, led_3]
-default_pins = [4, 20, 21, 29]
+
+# default pin values on webpage
+def_pins = [['pin1', 4, 'Yellow'], ['pin2', 20, 'Green'],
+            ['pin2', 21, 'Red'], ['pin3', 29, 'Blue']]
 
 
 # function called from index.html to setup the labels and GPIO pins for leds
@@ -101,7 +104,7 @@ def web_server():
 
     @ app.get('/')
     def index(request):
-        return render_template('index.html')
+        return render_template('index.html', def_pins)
 
     @ app.get('computer.svg')
     def computer_svg(request):
