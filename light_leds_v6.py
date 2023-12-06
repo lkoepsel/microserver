@@ -4,6 +4,7 @@ from machine import Pin
 from microdot import Microdot, Response, send_file, Request
 from microdot_utemplate import render_template
 import sys
+from wlan import connect
 
 
 # PicoW Pin Numbering
@@ -114,14 +115,9 @@ def control_led(r_leds):
 
 
 def web_server():
-    global led_0, led_1, led_2, led_3
-    # Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
-    # Will not differeniate between Pico and Pico W!
-    if hasattr(sys.implementation, '_machine'):
-        from wlan import connect
-        if not (connect()):
-            print(f"wireless connection failed")
-            sys.exit()
+    if not (connect()):
+        print(f"wireless connection failed")
+        sys.exit()
 
     app = Microdot()
     Response.default_content_type = 'text/html'

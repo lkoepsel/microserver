@@ -2,6 +2,7 @@
 from machine import Pin
 from microdot import Microdot, send_file
 import sys
+from wlan import connect
 
 
 yellow = Pin(2, Pin.OUT)
@@ -22,13 +23,9 @@ def set_led(color, level):
 
 
 def web_server():
-    # Required for WLAN on Pico W, 'machine' indicates Pico-based micropython
-    # Will not differeniate between Pico and Pico W!
-    if hasattr(sys.implementation, '_machine'):
-        from wlan import connect
-        if not (connect()):
-            print(f"wireless connection failed")
-            sys.exit()
+    if not (connect()):
+        print(f"wireless connection failed")
+        sys.exit()
 
     app = Microdot()
 

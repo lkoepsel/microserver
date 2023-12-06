@@ -60,7 +60,7 @@ def connect():
     # Handle connection error by showing fast blink and printing error
     if wlan.status() != 3:
         blink.init(freq=20, mode=Timer.PERIODIC, callback=tick)
-        print(f"Connection failed: {STATUS[wlan.status()+3]}")
+        print(f"Connection failed: {STATUS[wlan.status() + 3]}")
         return False
 
     # if connection was successful, provide details as to the wireless signal
