@@ -27,3 +27,5 @@ config.*
 __pycache__/
 .DS*
 *.uf2
+*.stc
+
