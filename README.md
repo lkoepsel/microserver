@@ -1,4 +1,20 @@
 # Pico W LED Demo
+
+## Updated:
+Using new 2.0 version of [microdot web server](https://github.com/miguelgrinberg/microdot). This changes how microdot is copied to the board, instead of standalone files, it looks like a package:
+
+```bash
+...files
+/microdot/
+         106 __init__.py
+       51363 microdot.py
+        2543 utemplate.py
+...files
+```
+
+All mpbuild files *files_vN.txt* have been tested and load properly.
+
+## Introduction
 The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small web server called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](), running on a Pico W. This demo is intended to serve as a simple iterative example as to how to develop a user-facing webpage running on the Pico W.
 ## Versions and Installation
 If you already have files on your Pico W, you will need to "*wipe*" your Pico W file system (reformat it) to reduce possible program conflicts. **Be sure you have saved any program files on your PC, before doing so!** See *"Tool to Erase...* below for more information.

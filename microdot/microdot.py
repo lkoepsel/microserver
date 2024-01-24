@@ -3,9 +3,44 @@ microdot
 --------
 
 The ``microdot`` module defines a few classes that help implement HTTP-based
-servers for MicroPython and standard Python, with multithreading support for
-Python interpreters that support it.
+servers for MicroPython and standard Python.
 """
+import asyncio
+import io
+import json
+import re
+import time
+
+try:
+    from inspect import iscoroutinefunction, iscoroutine
+    from functools import partial
+
+    async def invoke_handler(handler, *args, **kwargs):
+        """Invoke a handler and return the result.
+
+        This method runs sync handlers in a thread pool executor.
+        """
+        if iscoroutinefunction(handler):
+            ret = await handler(*args, **kwargs)
+        else:
+            ret = await asyncio.get_running_loop().run_in_executor(
+                None, partial(handler, *args, **kwargs))
+        return ret
+except ImportError:  # pragma: no cover
+    def iscoroutine(coro):
+        return hasattr(coro, 'send') and hasattr(coro, 'throw')
+
+    async def invoke_handler(handler, *args, **kwargs):
+        """Invoke a handler and return the result.
+
+        This method runs sync handlers in the asyncio thread, which can
+        potentially cause blocking and performance issues.
+        """
+        ret = handler(*args, **kwargs)
+        if iscoroutine(ret):
+            ret = await ret
+        return ret
+
 try:
     from sys import print_exception
 except ImportError:  # pragma: no cover
@@ -13,45 +48,6 @@ except ImportError:  # pragma: no cover
 
     def print_exception(exc):
         traceback.print_exc()
-try:
-    import uerrno as errno
-except ImportError:
-    import errno
-
-concurrency_mode = 'threaded'
-
-try:  # pragma: no cover
-    import threading
-
-    def create_thread(f, *args, **kwargs):
-        # use the threading module
-        threading.Thread(target=f, args=args, kwargs=kwargs).start()
-except ImportError:  # pragma: no cover
-    def create_thread(f, *args, **kwargs):
-        # no threads available, call function synchronously
-        f(*args, **kwargs)
-
-    concurrency_mode = 'sync'
-
-try:
-    import ujson as json
-except ImportError:
-    import json
-
-try:
-    import ure as re
-except ImportError:
-    import re
-
-socket_timeout_error = OSError
-try:
-    import usocket as socket
-except ImportError:
-    try:
-        import socket
-        socket_timeout_error = socket.timeout
-    except ImportError:  # pragma: no cover
-        socket = None
 
 MUTED_SOCKET_ERRORS = [
     32,  # Broken pipe
@@ -275,7 +271,31 @@ class MultiDict(dict):
         return values
 
 
-class Request():
+class AsyncBytesIO:
+    """An async wrapper for BytesIO."""
+    def __init__(self, data):
+        self.stream = io.BytesIO(data)
+
+    async def read(self, n=-1):
+        return self.stream.read(n)
+
+    async def readline(self):  # pragma: no cover
+        return self.stream.readline()
+
+    async def readexactly(self, n):  # pragma: no cover
+        return self.stream.read(n)
+
+    async def readuntil(self, separator=b'\n'):  # pragma: no cover
+        return self.stream.readuntil(separator=separator)
+
+    async def awrite(self, data):  # pragma: no cover
+        return self.stream.write(data)
+
+    async def aclose(self):  # pragma: no cover
+        pass
+
+
+class Request:
     """An HTTP request."""
     #: Specify the maximum payload size that is accepted. Requests with larger
     #: payloads will be rejected with a 413 status code. Applications can
@@ -305,12 +325,6 @@ class Request():
     #:
     #:    Request.max_readline = 16 * 1024  # 16KB lines allowed
     max_readline = 2 * 1024
-
-    #: Specify a suggested read timeout to use when reading the request. Set to
-    #: 0 to disable the use of a timeout. This timeout should be considered a
-    #: suggestion only, as some platforms may not support it. The default is
-    #: 1 second.
-    socket_read_timeout = 1
 
     class G:
         pass
@@ -361,48 +375,62 @@ class Request():
         self._body = body
         self.body_used = False
         self._stream = stream
-        self.stream_used = False
         self.sock = sock
         self._json = None
         self._form = None
         self.after_request_handlers = []
 
     @staticmethod
-    def create(app, client_stream, client_addr, client_sock=None):
+    async def create(app, client_reader, client_writer, client_addr):
         """Create a request object.
 
-
         :param app: The Microdot application instance.
-        :param client_stream: An input stream from where the request data can
+        :param client_reader: An input stream from where the request data can
                               be read.
+        :param client_writer: An output stream where the response data can be
+                              written.
         :param client_addr: The address of the client, as a tuple.
-        :param client_sock: The low-level socket associated with the request.
 
-        This method returns a newly created ``Request`` object.
+        This method is a coroutine. It returns a newly created ``Request``
+        object.
         """
         # request line
-        line = Request._safe_readline(client_stream).strip().decode()
-        if not line:
+        line = (await Request._safe_readline(client_reader)).strip().decode()
+        if not line:  # pragma: no cover
             return None
         method, url, http_version = line.split()
         http_version = http_version.split('/', 1)[1]
 
         # headers
         headers = NoCaseDict()
+        content_length = 0
         while True:
-            line = Request._safe_readline(client_stream).strip().decode()
+            line = (await Request._safe_readline(
+                client_reader)).strip().decode()
             if line == '':
                 break
             header, value = line.split(':', 1)
             value = value.strip()
             headers[header] = value
+            if header.lower() == 'content-length':
+                content_length = int(value)
+
+        # body
+        body = b''
+        if content_length and content_length <= Request.max_body_length:
+            body = await client_reader.readexactly(content_length)
+            stream = None
+        else:
+            body = b''
+            stream = client_reader
 
         return Request(app, client_addr, method, url, http_version, headers,
-                       stream=client_stream, sock=client_sock)
+                       body=body, stream=stream,
+                       sock=(client_reader, client_writer))
 
     def _parse_urlencoded(self, urlencoded):
         data = MultiDict()
-        if len(urlencoded) > 0:
+        if len(urlencoded) > 0:  # pragma: no branch
             if isinstance(urlencoded, str):
                 for kv in [pair.split('=', 1)
                            for pair in urlencoded.split('&') if pair]:
@@ -418,27 +446,13 @@ class Request():
     @property
     def body(self):
         """The body of the request, as bytes."""
-        if self.stream_used:
-            raise RuntimeError('Cannot use both stream and body')
-        if self._body is None:
-            self._body = b''
-            if self.content_length and \
-                    self.content_length <= Request.max_body_length:
-                while len(self._body) < self.content_length:
-                    data = self._stream.read(
-                        self.content_length - len(self._body))
-                    if len(data) == 0:  # pragma: no cover
-                        raise EOFError()
-                    self._body += data
-                self.body_used = True
         return self._body
 
     @property
     def stream(self):
-        """The input stream, containing the request body."""
-        if self.body_used:
-            raise RuntimeError('Cannot use both stream and body')
-        self.stream_used = True
+        """The body of the request, as a bytes stream."""
+        if self._stream is None:
+            self._stream = AsyncBytesIO(self._body)
         return self._stream
 
     @property
@@ -494,21 +508,21 @@ class Request():
         return f
 
     @staticmethod
-    def _safe_readline(stream):
-        line = stream.readline(Request.max_readline + 1)
+    async def _safe_readline(stream):
+        line = (await stream.readline())
         if len(line) > Request.max_readline:
             raise ValueError('line too long')
         return line
 
 
-class Response():
+class Response:
     """An HTTP response class.
 
     :param body: The body of the response. If a dictionary or list is given,
                  a JSON formatter is used to generate the body. If a file-like
-                 object or a generator is given, a streaming response is used.
-                 If a string is given, it is encoded from UTF-8. Else, the
-                 body should be a byte sequence.
+                 object or an async generator is given, a streaming response is
+                 used. If a string is given, it is encoded from UTF-8. Else,
+                 the body should be a byte sequence.
     :param status_code: The numeric HTTP status code of the response. The
                         default is 200.
     :param headers: A dictionary of headers to include in the response.
@@ -526,6 +540,7 @@ class Response():
         'png': 'image/png',
         'txt': 'text/plain',
     }
+
     send_file_buffer_size = 1024
 
     #: The content type to use for responses that do not explicitly define a
@@ -558,7 +573,8 @@ class Response():
         self.is_head = False
 
     def set_cookie(self, cookie, value, path=None, domain=None, expires=None,
-                   max_age=None, secure=False, http_only=False):
+                   max_age=None, secure=False, http_only=False,
+                   partitioned=False):
         """Add a cookie to the response.
 
         :param cookie: The cookie's name.
@@ -570,6 +586,7 @@ class Response():
         :param max_age: The cookie's ``Max-Age`` value.
         :param secure: The cookie's ``secure`` flag.
         :param http_only: The cookie's ``HttpOnly`` flag.
+        :param partitioned: Whether the cookie is partitioned.
         """
         http_cookie = '{cookie}={value}'.format(cookie=cookie, value=value)
         if path:
@@ -579,19 +596,31 @@ class Response():
         if expires:
             if isinstance(expires, str):
                 http_cookie += '; Expires=' + expires
-            else:
-                http_cookie += '; Expires=' + expires.strftime(
-                    '%a, %d %b %Y %H:%M:%S GMT')
+            else:  # pragma: no cover
+                http_cookie += '; Expires=' + time.strftime(
+                    '%a, %d %b %Y %H:%M:%S GMT', expires.timetuple())
         if max_age:
             http_cookie += '; Max-Age=' + str(max_age)
         if secure:
             http_cookie += '; Secure'
         if http_only:
             http_cookie += '; HttpOnly'
+        if partitioned:
+            http_cookie += '; Partitioned'
         if 'Set-Cookie' in self.headers:
             self.headers['Set-Cookie'].append(http_cookie)
         else:
             self.headers['Set-Cookie'] = [http_cookie]
+
+    def delete_cookie(self, cookie, **kwargs):
+        """Delete a cookie.
+
+        :param cookie: The cookie's name.
+        :param kwargs: Any cookie opens and flags supported by
+                       ``set_cookie()`` except ``expires``.
+        """
+        self.set_cookie(cookie, '', expires='Thu, 01 Jan 1970 00:00:01 GMT',
+                        **kwargs)
 
     def complete(self):
         if isinstance(self.body, bytes) and \
@@ -602,54 +631,101 @@ class Response():
             if 'charset=' not in self.headers['Content-Type']:
                 self.headers['Content-Type'] += '; charset=UTF-8'
 
-    def write(self, stream):
+    async def write(self, stream):
         self.complete()
 
-        # status code
-        reason = self.reason if self.reason is not None else \
-            ('OK' if self.status_code == 200 else 'N/A')
-        stream.write('HTTP/1.0 {status_code} {reason}\r\n'.format(
-            status_code=self.status_code, reason=reason).encode())
+        try:
+            # status code
+            reason = self.reason if self.reason is not None else \
+                ('OK' if self.status_code == 200 else 'N/A')
+            await stream.awrite('HTTP/1.0 {status_code} {reason}\r\n'.format(
+                status_code=self.status_code, reason=reason).encode())
 
-        # headers
-        for header, value in self.headers.items():
-            values = value if isinstance(value, list) else [value]
-            for value in values:
-                stream.write('{header}: {value}\r\n'.format(
-                    header=header, value=value).encode())
-        stream.write(b'\r\n')
+            # headers
+            for header, value in self.headers.items():
+                values = value if isinstance(value, list) else [value]
+                for value in values:
+                    await stream.awrite('{header}: {value}\r\n'.format(
+                        header=header, value=value).encode())
+            await stream.awrite(b'\r\n')
 
-        # body
-        if not self.is_head:
-            can_flush = hasattr(stream, 'flush')
-            try:
-                for body in self.body_iter():
+            # body
+            if not self.is_head:
+                iter = self.body_iter()
+                async for body in iter:
                     if isinstance(body, str):  # pragma: no cover
                         body = body.encode()
-                    stream.write(body)
-                    if can_flush:  # pragma: no cover
-                        stream.flush()
-            except OSError as exc:  # pragma: no cover
-                if exc.errno in MUTED_SOCKET_ERRORS:
-                    pass
-                else:
-                    raise
+                    try:
+                        await stream.awrite(body)
+                    except OSError as exc:  # pragma: no cover
+                        if exc.errno in MUTED_SOCKET_ERRORS or \
+                                exc.args[0] == 'Connection lost':
+                            if hasattr(iter, 'aclose'):
+                                await iter.aclose()
+                        raise
+                if hasattr(iter, 'aclose'):  # pragma: no branch
+                    await iter.aclose()
+
+        except OSError as exc:  # pragma: no cover
+            if exc.errno in MUTED_SOCKET_ERRORS or \
+                    exc.args[0] == 'Connection lost':
+                pass
+            else:
+                raise
 
     def body_iter(self):
-        if self.body:
-            if hasattr(self.body, 'read'):
-                while True:
-                    buf = self.body.read(self.send_file_buffer_size)
-                    if len(buf):
-                        yield buf
-                    if len(buf) < self.send_file_buffer_size:
-                        break
-                if hasattr(self.body, 'close'):  # pragma: no cover
-                    self.body.close()
-            elif hasattr(self.body, '__next__'):
-                yield from self.body
-            else:
-                yield self.body
+        if hasattr(self.body, '__anext__'):
+            # response body is an async generator
+            return self.body
+
+        response = self
+
+        class iter:
+            ITER_UNKNOWN = 0
+            ITER_SYNC_GEN = 1
+            ITER_FILE_OBJ = 2
+            ITER_NO_BODY = -1
+
+            def __aiter__(self):
+                if response.body:
+                    self.i = self.ITER_UNKNOWN  # need to determine type
+                else:
+                    self.i = self.ITER_NO_BODY
+                return self
+
+            async def __anext__(self):
+                if self.i == self.ITER_NO_BODY:
+                    await self.aclose()
+                    raise StopAsyncIteration
+                if self.i == self.ITER_UNKNOWN:
+                    if hasattr(response.body, 'read'):
+                        self.i = self.ITER_FILE_OBJ
+                    elif hasattr(response.body, '__next__'):
+                        self.i = self.ITER_SYNC_GEN
+                        return next(response.body)
+                    else:
+                        self.i = self.ITER_NO_BODY
+                        return response.body
+                elif self.i == self.ITER_SYNC_GEN:
+                    try:
+                        return next(response.body)
+                    except StopIteration:
+                        await self.aclose()
+                        raise StopAsyncIteration
+                buf = response.body.read(response.send_file_buffer_size)
+                if iscoroutine(buf):  # pragma: no cover
+                    buf = await buf
+                if len(buf) < response.send_file_buffer_size:
+                    self.i = self.ITER_NO_BODY
+                return buf
+
+            async def aclose(self):
+                if hasattr(response.body, 'close'):
+                    result = response.body.close()
+                    if iscoroutine(result):  # pragma: no cover
+                        await result
+
+        return iter()
 
     @classmethod
     def redirect(cls, location, status_code=302):
@@ -781,7 +857,7 @@ class HTTPException(Exception):
         return 'HTTPException: {}'.format(self.status_code)
 
 
-class Microdot():
+class Microdot:
     """An HTTP application class.
 
     This class implements an HTTP application instance and is heavily
@@ -1048,6 +1124,88 @@ class Microdot():
         """
         raise HTTPException(status_code, reason)
 
+    async def start_server(self, host='0.0.0.0', port=5000, debug=False,
+                           ssl=None):
+        """Start the Microdot web server as a coroutine. This coroutine does
+        not normally return, as the server enters an endless listening loop.
+        The :func:`shutdown` function provides a method for terminating the
+        server gracefully.
+
+        :param host: The hostname or IP address of the network interface that
+                     will be listening for requests. A value of ``'0.0.0.0'``
+                     (the default) indicates that the server should listen for
+                     requests on all the available interfaces, and a value of
+                     ``127.0.0.1`` indicates that the server should listen
+                     for requests only on the internal networking interface of
+                     the host.
+        :param port: The port number to listen for requests. The default is
+                     port 5000.
+        :param debug: If ``True``, the server logs debugging information. The
+                      default is ``False``.
+        :param ssl: An ``SSLContext`` instance or ``None`` if the server should
+                    not use TLS. The default is ``None``.
+
+        This method is a coroutine.
+
+        Example::
+
+            import asyncio
+            from microdot_asyncio import Microdot
+
+            app = Microdot()
+
+            @app.route('/')
+            async def index(request):
+                return 'Hello, world!'
+
+            async def main():
+                await app.start_server(debug=True)
+
+            asyncio.run(main())
+        """
+        self.debug = debug
+
+        async def serve(reader, writer):
+            if not hasattr(writer, 'awrite'):  # pragma: no cover
+                # CPython provides the awrite and aclose methods in 3.8+
+                async def awrite(self, data):
+                    self.write(data)
+                    await self.drain()
+
+                async def aclose(self):
+                    self.close()
+                    await self.wait_closed()
+
+                from types import MethodType
+                writer.awrite = MethodType(awrite, writer)
+                writer.aclose = MethodType(aclose, writer)
+
+            await self.handle_request(reader, writer)
+
+        if self.debug:  # pragma: no cover
+            print('Starting async server on {host}:{port}...'.format(
+                host=host, port=port))
+
+        try:
+            self.server = await asyncio.start_server(serve, host, port,
+                                                     ssl=ssl)
+        except TypeError:  # pragma: no cover
+            self.server = await asyncio.start_server(serve, host, port)
+
+        while True:
+            try:
+                if hasattr(self.server, 'serve_forever'):  # pragma: no cover
+                    try:
+                        await self.server.serve_forever()
+                    except asyncio.CancelledError:
+                        pass
+                await self.server.wait_closed()
+                break
+            except AttributeError:  # pragma: no cover
+                # the task hasn't been initialized in the server object yet
+                # wait a bit and try again
+                await asyncio.sleep(0.1)
+
     def run(self, host='0.0.0.0', port=5000, debug=False, ssl=None):
         """Start the web server. This function does not normally return, as
         the server enters an endless listening loop. The :func:`shutdown`
@@ -1069,45 +1227,18 @@ class Microdot():
 
         Example::
 
-            from microdot import Microdot
+            from microdot_asyncio import Microdot
 
             app = Microdot()
 
             @app.route('/')
-            def index(request):
+            async def index(request):
                 return 'Hello, world!'
 
             app.run(debug=True)
         """
-        self.debug = debug
-        self.shutdown_requested = False
-
-        self.server = socket.socket()
-        ai = socket.getaddrinfo(host, port)
-        addr = ai[0][-1]
-
-        if self.debug:  # pragma: no cover
-            print('Starting {mode} server on {host}:{port}...'.format(
-                mode=concurrency_mode, host=host, port=port))
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server.bind(addr)
-        self.server.listen(5)
-
-        if ssl:
-            self.server = ssl.wrap_socket(self.server, server_side=True)
-
-        while not self.shutdown_requested:
-            try:
-                sock, addr = self.server.accept()
-            except OSError as exc:  # pragma: no cover
-                if exc.errno == errno.ECONNABORTED:
-                    break
-                else:
-                    print_exception(exc)
-            except Exception as exc:  # pragma: no cover
-                print_exception(exc)
-            else:
-                create_thread(self.handle_request, sock, addr)
+        asyncio.run(self.start_server(host=host, port=port, debug=debug,
+                                      ssl=ssl))  # pragma: no cover
 
     def shutdown(self):
         """Request a server shutdown. The server will then exit its request
@@ -1122,7 +1253,7 @@ class Microdot():
                 request.app.shutdown()
                 return 'The server is shutting down...'
         """
-        self.shutdown_requested = True
+        self.server.close()
 
     def find_route(self, req):
         method = req.method.upper()
@@ -1151,51 +1282,35 @@ class Microdot():
         allow.append('OPTIONS')
         return {'Allow': ', '.join(allow)}
 
-    def handle_request(self, sock, addr):
-        if Request.socket_read_timeout and \
-                hasattr(sock, 'settimeout'):  # pragma: no cover
-            sock.settimeout(Request.socket_read_timeout)
-        if not hasattr(sock, 'readline'):  # pragma: no cover
-            stream = sock.makefile("rwb")
-        else:
-            stream = sock
-
+    async def handle_request(self, reader, writer):
         req = None
-        res = None
         try:
-            req = Request.create(self, stream, addr, sock)
-            res = self.dispatch_request(req)
-        except socket_timeout_error as exc:  # pragma: no cover
-            if exc.errno and exc.errno != errno.ETIMEDOUT:
-                print_exception(exc)  # not a timeout
+            req = await Request.create(self, reader, writer,
+                                       writer.get_extra_info('peername'))
         except Exception as exc:  # pragma: no cover
             print_exception(exc)
+
+        res = await self.dispatch_request(req)
+        if res != Response.already_handled:  # pragma: no branch
+            await res.write(writer)
         try:
-            if res and res != Response.already_handled:  # pragma: no branch
-                res.write(stream)
-            stream.close()
+            await writer.aclose()
         except OSError as exc:  # pragma: no cover
             if exc.errno in MUTED_SOCKET_ERRORS:
                 pass
             else:
-                print_exception(exc)
-        except Exception as exc:  # pragma: no cover
-            print_exception(exc)
-        if stream != sock:  # pragma: no cover
-            sock.close()
-        if self.shutdown_requested:  # pragma: no cover
-            self.server.close()
+                raise
         if self.debug and req:  # pragma: no cover
             print('{method} {path} {status_code}'.format(
                 method=req.method, path=req.path,
                 status_code=res.status_code))
 
-    def dispatch_request(self, req):
+    async def dispatch_request(self, req):
         after_request_handled = False
         if req:
             if req.content_length > req.max_content_length:
                 if 413 in self.error_handlers:
-                    res = self.error_handlers[413](req)
+                    res = await invoke_handler(self.error_handlers[413], req)
                 else:
                     res = 'Payload too large', 413
             else:
@@ -1204,11 +1319,12 @@ class Microdot():
                     res = None
                     if callable(f):
                         for handler in self.before_request_handlers:
-                            res = handler(req)
+                            res = await invoke_handler(handler, req)
                             if res:
                                 break
                         if res is None:
-                            res = f(req, **req.url_args)
+                            res = await invoke_handler(
+                                f, req, **req.url_args)
                         if isinstance(res, tuple):
                             body = res[0]
                             if isinstance(res[1], int):
@@ -1221,14 +1337,16 @@ class Microdot():
                         elif not isinstance(res, Response):
                             res = Response(res)
                         for handler in self.after_request_handlers:
-                            res = handler(req, res) or res
+                            res = await invoke_handler(
+                                handler, req, res) or res
                         for handler in req.after_request_handlers:
-                            res = handler(req, res) or res
+                            res = await invoke_handler(
+                                handler, req, res) or res
                         after_request_handled = True
                     elif isinstance(f, dict):
                         res = Response(headers=f)
                     elif f in self.error_handlers:
-                        res = self.error_handlers[f](req)
+                        res = await invoke_handler(self.error_handlers[f], req)
                     else:
                         res = 'Not found', f
                 except HTTPException as exc:
@@ -1249,32 +1367,35 @@ class Microdot():
                                 break
                     if exc_class:
                         try:
-                            res = self.error_handlers[exc_class](req, exc)
+                            res = await invoke_handler(
+                                self.error_handlers[exc_class], req, exc)
                         except Exception as exc2:  # pragma: no cover
                             print_exception(exc2)
                     if res is None:
                         if 500 in self.error_handlers:
-                            res = self.error_handlers[500](req)
+                            res = await invoke_handler(
+                                self.error_handlers[500], req)
                         else:
                             res = 'Internal server error', 500
         else:
             if 400 in self.error_handlers:
-                res = self.error_handlers[400](req)
+                res = await invoke_handler(self.error_handlers[400], req)
             else:
                 res = 'Bad request', 400
-
         if isinstance(res, tuple):
             res = Response(*res)
         elif not isinstance(res, Response):
             res = Response(res)
         if not after_request_handled:
             for handler in self.after_error_request_handlers:
-                res = handler(req, res) or res
+                res = await invoke_handler(
+                    handler, req, res) or res
         res.is_head = (req and req.method == 'HEAD')
         return res
 
 
-abort = Microdot.abort
 Response.already_handled = Response()
+
+abort = Microdot.abort
 redirect = Response.redirect
 send_file = Response.send_file

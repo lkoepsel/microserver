@@ -2,7 +2,7 @@
 # refactored to simplify the program, using tuple of LEDS instead of variables
 from machine import Pin
 from microdot import Microdot, Response, send_file, Request
-from microdot_utemplate import render_template
+from microdot.utemplate import Template
 import sys
 from pins import PicoW_pins
 from wlan import connect
@@ -97,11 +97,11 @@ def web_server():
         # else, just turn the leds on/off
         else:
             control_led(request.form.getlist('led'))
-        return render_template('control.html', leds)
+        return Template('control.html').render(leds)
 
     @ app.get('/')
     def index(request):
-        return render_template('index.html', def_pins)
+        return Template('index.html').render(def_pins)
 
     @ app.get('computer.svg')
     def computer_svg(request):

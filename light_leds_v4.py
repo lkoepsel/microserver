@@ -1,7 +1,7 @@
 # light_leds_v4 - browser-based method of controlling leds
 from machine import Pin
 from microdot import Microdot, Response, send_file, Request
-from microdot_utemplate import render_template
+from microdot.utemplate import Template
 import sys
 from wlan import connect
 
@@ -69,9 +69,9 @@ def web_server():
         global led_state
         if request.method == 'POST':
             set_led(request.form.getlist('led'))
-            return render_template('index.html', led_state, leds)
+            return Template('index.html').render(led_state, leds)
         else:
-            return render_template('index.html', led_state, leds)
+            return Template('index.html').render(led_state, leds)
 
     @app.get('computer.svg')
     def computer_svg(request):

@@ -1,12 +1,14 @@
 # webserver_v6 files
 /templates
 /utemplate
+/microdot
 computer.svg
-microdot.py
-microdot_utemplate.py
 secrets.py
 wlan.py
 +light_leds_v6.py
+microdot/__init__.py
+microdot/microdot.py
+microdot/utemplate.py
 templates/mvp.css
 utemplate/compiled.py
 utemplate/recompile.py

@@ -1,12 +1,14 @@
 # light_leds_v1 files
 /templates
 /utemplate
+/microdot
 computer.svg
-microdot.py
-microdot_utemplate.py
 secrets.py
 wlan.py
 +light_leds_v1.py
+microdot/__init__.py
+microdot/microdot.py
+microdot/utemplate.py
 templates/marx.css
 utemplate/compiled.py
 utemplate/recompile.py

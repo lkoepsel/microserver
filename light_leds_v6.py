@@ -2,7 +2,7 @@
 # allows renaming of leds and pin selection
 from machine import Pin
 from microdot import Microdot, Response, send_file, Request
-from microdot_utemplate import render_template
+from microdot.utemplate import Template
 import sys
 from wlan import connect
 
@@ -134,7 +134,7 @@ def web_server():
             set_leds(request.form)
         else:
             control_led(request.form.getlist('led'))
-        return render_template('control.html', led_0, led_1, led_2, led_3)
+        return Template('control.html').render(led_0, led_1, led_2, led_3)
 
     @ app.get('/')
     def index(request):
