@@ -12,7 +12,7 @@ Using new 2.0 version of [microdot web server](https://github.com/miguelgrinberg
 ...files
 ```
 
-All mpbuild files *files_vN.txt* have been tested and load properly.
+All mpbuild files *files_vN.txt* have been tested and load properly. I've added `async def` to all web functions in the 7th version *light_leds_v7* per the documentation. The recommendation stated it could increase performance. It does appear to do so, though I haven't done explicit timing.
 
 ## Introduction
 The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small web server called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](), running on a Pico W. This demo is intended to serve as a simple iterative example as to how to develop a user-facing webpage running on the Pico W.
@@ -148,21 +148,37 @@ The *Pico W* doesn't have a reset button, which means there are two alternatives
 This program hasn't been optimized for size as its a capability demo, not a production program. I have switched from bulma css framework (200K) to [*mvp.css*](https://andybrewer.github.io/mvp/#docs) (10k).
 
 ## Automation to Copy Project to Board
-The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board.
+The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board. The program *mpbuild.py* has been removed from this repository and now exists in the [CoolTerm_pip repository](https://github.com/lkoepsel/CoolTerm_pip). This repository continues to be the best example as to **how to use** *mpbuild.
 ```bash
-usage: mpbuild.py [-h] [-n] [-v] build
+mpbuild --help
+Usage: mpbuild [OPTIONS] BUILD
 
-Reads names of files from build file in current folder. Copies files to attached MicroPython board. Use --dry-run or -n to print commands, instead of execution. Filenames can NOT have blanks in their names.
+  Builds an MicroPython application on a board. Uses a text file containing
+  names of folders and files to copy files and create folders, approriately to
+  a board running MicroPython. Requires -p port for serial port: as in -p
+  /dev/cu.usb... or -p COM3 Board storage must be empty or program exits.
 
-positional arguments:
-  build          file to use for building Pico
+  Detailed example: https://github.com/lkoepsel/microserver
 
-options:
-  -h, --help     show this help message and exit
-  -n, --dry-run  required to copy the files to the board
-  -v, --verbose  print lines in build file prior to execution
+  * Requires a text file containing the following:
+  * Filenames can NOT have blanks in their names.
+  * lines starting with '\n *' are comments and ignored
+  * lines starting with '/' are directories and are created
+  * lines starting with '!' are files to be copied and renamed,
+  + 2 fields are required, separated by a ', ', localname, piconame
+  * 1 line starting with '+' will be copied to main.py
+  * directory lines must be prior to the files in the directories
+  * all other lines are valid files in the current directory
+  * -p port required to set to board serial port
+
+Options:
+  --version        Show the version and exit.
+  -p, --port TEXT  Port address (e.g., /dev/cu.usbmodem3101, COM3).
+                   [required]
+  -n, --dry-run    Show commands w/o execution & print file format.
+  -v, --verbose    Print lines in build file prior to execution.
+  --help           Show this message and exit.
 ```
-The program uses pyboard.py from mpremote (installed via pip), which means the PYBOARD_DEVICE environmental variable must be set. See [here](https://docs.micropython.org/en/latest/reference/pyboard.py.html#running-a-command-on-the-device).
 
 ## Tool to Erase Pico LittleFS filesystem
 Based on a [file by @jimmo](https://github.com/jimmo/dotfiles/blob/master/common/home/.config/mpremote/config.py), I am using his recommended method of erasing all of the files on a Pico. It is in my [config file](https://wellys.com/posts/rp2040_mpremote/#config) or you can use this command:

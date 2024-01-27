@@ -83,11 +83,11 @@ def web_server():
     Request.socket_read_timeout = None
 
     @ app.route('mvp.css')
-    def mvp(request):
+    async def mvp(request):
         return send_file('templates/mvp.css', max_age=31536000)
 
     @ app.post('/control.html')
-    def control(request):
+    async def control(request):
         global leds
         # if len(labels list) > 0, its first time through
         # set labels and pin assignments
@@ -100,16 +100,16 @@ def web_server():
         return Template('control.html').render(leds)
 
     @ app.get('/')
-    def index(request):
+    async def index(request):
         return Template('index.html').render(def_pins)
 
     @ app.get('computer.svg')
-    def computer_svg(request):
+    async def computer_svg(request):
         return send_file('./computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @ app.get('favicon.ico')
-    def favicon_ico(request):
+    async def favicon_ico(request):
         return send_file('./favicon.png', max_age=31536000)
 
     app.run(port=5001, debug=True)
