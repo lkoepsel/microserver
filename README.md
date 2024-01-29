@@ -188,6 +188,29 @@ mpremote exec --no-follow  "import os, machine, rp2; os.umount('/'); bdev = rp2.
 ```
 **IT WILL ERASE ALL OF YOUR PROGRAM FILES ON YOUR PICO!!** It will not delete the MicroPython uf2 file.
 
+### Config file
+Store this file in ~/.config/mpremote/config.py
+
+```python
+commands = {
+    "A": "connect id:e6614864d3323634",
+    "fl": "fs ls",
+    "littlefs_rp2": [
+        "exec",
+        "--no-follow",
+        "import os, machine, rp2; os.umount('/'); bdev = rp2.Flash();\
+                os.VfsLfs2.mkfs(bdev, progsize=256); \
+                vfs = os.VfsLfs2(bdev, progsize=256); \
+                os.mount(vfs, '/'); machine.reset()",
+    ],
+    "test": ["mount", ".", "exec", "import test"],
+    "info": ["mount", ".", "run", "fs_info.py"],
+    "blink": ["mount", ".", "exec",
+              "from blink import Blink; Blink()"]
+}
+```
+
+
 ## Error Codes
 When using the REPL, frequently you might see an error code. Here is a list of known MicroPython error codes and explanations from *CPython*:
 ```bash
