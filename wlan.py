@@ -57,23 +57,24 @@ def connect():
         max_wait -= 1
         time.sleep(1)
 
-    # Handle connection error by showing fast blink and printing error
-    if wlan.status() != 3:
-        blink.init(freq=20, mode=Timer.PERIODIC, callback=tick)
-        print(f"Connection failed: {STATUS[wlan.status() + 3]}")
-        return False
-
     # if connection was successful, provide details as to the wireless signal
-    else:
+    if wlan.status() == 3:
         blink.deinit()
         status = wlan.ifconfig()
         MAC = ubinascii.hexlify(network.WLAN().config('mac'), ':').decode()
+        print(f"\nConnection: {STATUS[wlan.status() + 3]}")
         print(f"IP Address: {status[0]}")
         print(f"MAC Address: {MAC}")
         print(f"Channel: {wlan.config('channel')}")
         print(f"SSID: {wlan.config('essid')}")
         print(f"TX Power: {wlan.config('txpower')}")
         return True
+
+    # Handle connection error by showing fast blink and printing error
+    else:
+        blink.init(freq=20, mode=Timer.PERIODIC, callback=tick)
+        print(f"Connection failed: {STATUS[wlan.status() + 3]}")
+        return False
 
 
 if __name__ == '__main__':
