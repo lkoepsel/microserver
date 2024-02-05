@@ -35,6 +35,9 @@ mpbuild files_vn.txt
 ### Version 1
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
 
+### Version 1ws
+Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. The example builds on the *echo* example in the [Microdot documentation](https://microdot.readthedocs.io/en/latest/extensions.html#websocket-support).
+
 ### Version 2
 Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for using several values.
 
