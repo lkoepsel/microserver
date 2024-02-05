@@ -42,7 +42,7 @@ Very simple page which will provide the capability to turn the built-in LED ON/O
 Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for using several values.
 
 ### Version 2ws
-Adds to version 1 with images for computer, and on/off leds. Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. 
+Adds to version 1 with images for computer, and on/off leds. Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. Clicking on an image will turn the built-in led on/off. There is styling via css which hides the radio buttons, and provides a square around the selected state. The advantage of this version (or any Web Socket page), is that the page isn't reloaded, the javascript on the page will immediately advise the MicroPython application of the desired state.
 
 ### Version 3
 Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.

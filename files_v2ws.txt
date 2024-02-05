@@ -3,6 +3,7 @@
 /utemplate
 /microdot
 computer.svg
+favicon.png
 on.svg
 off.svg
 secrets.py

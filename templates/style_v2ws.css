@@ -1,28 +1,25 @@
-.section-1 {
-  text-align: center;  
-}
-
-.section-1 img {
-  display: block;
-  margin: 0 auto;
-}
-
-.section-2 {
+.leds {
+  inline-size: 300px;
   display: flex;
   justify-content: space-evenly;
+  margin-bottom: 20px;
 }
 
-.section-3 {
-  text-align: center; 
+.visually-hidden { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.section-3 input {
-  display: block;
-  margin: 0 auto;
+.state-image {
+  cursor: pointer; 
 }
 
-.section-1, 
-.section-2,
-.section-3 {
-  margin-bottom: 20px;  
+.state-image:hover {
+  outline: 4px solid blue;
+}
+
+input[type="radio"]:checked + .state-image {
+  outline: 4px solid black;
 }

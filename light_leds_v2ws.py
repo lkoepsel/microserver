@@ -41,9 +41,13 @@ def web_server():
     async def style_v2ws(request):
         return send_file('templates/style_v2ws.css', max_age=31536000)
 
-    @app.route('/echo')
+    @ app.get('favicon.ico')
+    async def favicon_ico(request):
+        return send_file('./favicon.png', max_age=31536000)
+
+    @app.route('/ws')
     @with_websocket
-    async def echo(request, ws):
+    async def ws(request, ws):
         while True:
             data = await ws.receive()
             if data == 'on':
