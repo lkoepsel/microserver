@@ -55,7 +55,7 @@ def web_server():
             elif data == 'off':
                 builtin.value(0)
             else:
-                await ws.send(data)
+                print(f"Error occured, value must be 'on' or 'off'")
 
     app.run(debug=True)
 

@@ -27,22 +27,18 @@
       </div>
     </main>
     <script>
-      // connect to a WebSocket server at the 'ws' endpoint
+      // 1. Connect to a WebSocket server at the 'ws' endpoint
       const socket = new WebSocket('ws://' + location.host + '/ws');
 
-      // find all radio buttons with the input name of state
+      // 2. Find all radio buttons with the input name of 'state'
       const radios = document.querySelectorAll('input[name="state"]');
 
-      // loop through all radio buttons adding an 'click' event listener
-      // when button clicked, send specific value back to socket
+      // 3. Loop through all radio buttons adding an 'click' event listener
+      // when button clicked, send radio 'value' back to socket
       radios.forEach(radio => {
         radio.addEventListener('click', () => {
           socket.send(radio.value); 
         });
-      });
-      // add socket listener which sends message back to console (.py app)
-      socket.addEventListener('message', ev => {
-        log('<<< ' + ev.data); 
       });
     </script>
   </body>
