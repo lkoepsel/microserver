@@ -35,17 +35,20 @@ mpbuild files_vn.txt
 ### Version 1
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
 
-### Version 1ws
+### Version 1ws - Web Socket version
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. The example builds on the *echo* example in the [Microdot documentation](https://microdot.readthedocs.io/en/latest/extensions.html#websocket-support).
 
 ### Version 2
 Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for using several values.
 
-### Version 2ws
+### Version 2ws - Web Socket version
 Adds to version 1 with images for computer, and on/off leds. Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. Clicking on an image will turn the built-in led on/off. There is styling via css which hides the radio buttons, and provides a square around the selected state. The advantage of this version (or any Web Socket page), is that the page isn't reloaded, the javascript on the page will immediately advise the MicroPython application of the desired state.
 
 ### Version 3
 Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.
+
+### Version 3ws - Web Socket version
+Continues on the theme of using Web Sockets, instead of a page reload. In this case, the page uses a hidden checkbox, with the word "Click" as an indicator of action required. When clicked, the image changes to represent the state of the led, *on* or *off*.
 
 ### Version 4 
 Adds information to the four LED's by providing documentation as to the color/pin combination expected. This adds using a template file with variables, expanding on the user experience.

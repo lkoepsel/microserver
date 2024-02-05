@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Microdot WebSocket Demo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./mvp.css">
+    <link rel="stylesheet" href="./style_v3ws.css">
+  </head>
+  <body>
+    <main class="container">
+      <div>
+        <h1>LED WebSocket Demo</h1>
+        <figure>
+          <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
+        </figure>
+      </div>
+      <div class="leds">
+      
+        <input type="checkbox" id="stateCheckbox" class="visually-hidden"/>
+        <label class="state-image" for="stateCheckbox">Click</label>
+
+        <img src="off.svg" id="stateImage" height="100" width="100" alt="LED off" />
+      
+      </div>
+    </main>
+    <script>
+      // 1. Connect to a WebSocket server at the 'ws' endpoint
+      const socket = new WebSocket('ws://' + location.host + '/ws');
+
+      // 2. Setup checkbox with the name of 'stateCheckbox'
+      // image will reflect the state of the checkbox
+      // on load, set state to off
+      const checkbox = document.getElementById('stateCheckbox');
+      const stateImage = document.getElementById('stateImage');
+      setStateImage(); 
+
+      // Listen for checkbox changes and change state image
+      checkbox.addEventListener('change', setStateImage);
+
+
+      // 3. When checkbox state changes, also send state to socket
+      // 'true' for checked (on) and 'false' for unchecked (off)
+        checkbox.addEventListener('change', () => {
+          socket.send(checkbox.checked); 
+        });
+
+      // function changes image based on state of checkbox
+      function setStateImage() {
+        if(checkbox.checked) {
+          stateImage.src = "on.svg"; 
+        } else {
+          stateImage.src = "off.svg";
+        }
+
+      }
+    </script>
+  </body>
+</html>
+
+
