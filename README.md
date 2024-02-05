@@ -41,6 +41,9 @@ Very simple page which will provide the capability to turn the built-in LED ON/O
 ### Version 2
 Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for using several values.
 
+### Version 2ws
+Adds to version 1 with images for computer, and on/off leds. Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. 
+
 ### Version 3
 Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.
 
