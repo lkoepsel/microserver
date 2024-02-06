@@ -15,67 +15,86 @@
         </figure>
       </div>
       <div class="leds">
-        <div class="led_1">
+        <div class="led led_1">
         <input type="checkbox" id="stateCheckbox_1" class="visually-hidden"/>
         <label class="state-image_1" for="stateCheckbox_1">Yellow</label>
         <img src="off.svg" id="stateImage_1" height="100" width="100" alt="LED 1 off" />
       </div>
-      <div class="led_2">
+      <div class="led led_2">
         <input type="checkbox" id="stateCheckbox_2" class="visually-hidden"/>
         <label class="state-image_2" for="stateCheckbox_2">Green</label>
-        <img src="off.svg" id="stateImage_2" height="100" width="100" alt="LED 1 off" />
+        <img src="off.svg" id="stateImage_2" height="100" width="100" alt="LED 2 off" />
+      </div>
+        <div class="led led_3">
+        <input type="checkbox" id="stateCheckbox_3" class="visually-hidden"/>
+        <label class="state-image_3" for="stateCheckbox_3">Red</label>
+        <img src="off.svg" id="stateImage_3" height="100" width="100" alt="LED 3 off" />
+      </div>
+      <div class="led led_4">
+        <input type="checkbox" id="stateCheckbox_4" class="visually-hidden"/>
+        <label class="state-image_4" for="stateCheckbox_4">Blue</label>
+        <img src="off.svg" id="stateImage_4" height="100" width="100" alt="LED 4 off" />
       </div>
       </div>
     </main>
     <script>
-      // 1. Connect to a WebSocket server at the 'ws' endpoint
+      // Array to store all checkboxes and create web socket
+      const checkboxes = [];
       const socket = new WebSocket('ws://' + location.host + '/ws');
 
-      // 2. Setup checkbox with the name of 'stateCheckbox'
-      // image will reflect the state of the checkbox
-      // on load, set state to off
-      const checkbox_1 = document.getElementById('stateCheckbox_1');
-      const stateImage_1 = document.getElementById('stateImage_1');
-      setStateImage_1(); 
 
-      const checkbox_2 = document.getElementById('stateCheckbox_2');
-      const stateImage_2 = document.getElementById('stateImage_2');
-      setStateImage_2(); 
+      // Array of 'on' image files
+      const onImages = [
+        "on_yellow.svg",
+        "on_green.svg",
+        "on_red.svg",
+        "on_blue.svg",
+      ];
+      // Loop through all elements with class "led_"
+      // Wait until page has loaded before proceding
+      document.addEventListener('DOMContentLoaded', () => {
+        const ledDivs = document.querySelectorAll(".led");  
+      
+        for (let i = 0; i < ledDivs.length; i++) {
+          // Get checkbox and image elements
+          const checkbox = ledDivs[i].querySelector("input[type='checkbox']");
+          const img = ledDivs[i].querySelector("img");
 
-      // Listen for checkbox changes and change state image
-      checkbox_1.addEventListener('change', setStateImage_1);
+          // Add checkbox div to array
+          checkboxes.push({
+            checkbox: checkbox,
+            image: img,
+            onImage: onImages[i] // Assign 'on" image
+          });
 
-      checkbox_2.addEventListener('change', setStateImage_2);
-
-
-      // 3. When checkbox state changes, also send state to socket
-      // 'true' for checked (on) and 'false' for unchecked (off)
-        checkbox_1.addEventListener('change', () => {
-          socket.send("1" + checkbox_1.checked); 
-        });
-
-        checkbox_2.addEventListener('change', () => {
-          socket.send(["2" + checkbox_2.checked]); 
-        });
-
-      // function changes image based on state of checkbox
-      function setStateImage_1() {
-        if(checkbox_1.checked) {
-          stateImage_1.src = "on_yellow.svg"; 
-        } else {
-          stateImage_1.src = "off.svg";
         }
 
-      }
+        // Loop through checkboxes array
+        for (let i = 0; i < checkboxes.length; i++) {
 
-    function setStateImage_2() {
-      if(checkbox_2.checked) {
-        stateImage_2.src = "on_green.svg"; 
-      } else {
-        stateImage_2.src = "off.svg";
-      }
+          // Alias current checkbox 
+          const {checkbox, image, onImage} = checkboxes[i];
 
-    }
+          // Set initial state
+          setStateImage(checkbox, image);
+
+          // Add event listeners
+          checkbox.addEventListener('change', () => {
+            const resp = JSON.stringify({ "i":i, "checkbox":checkbox.checked});
+            setStateImage(checkbox, image, onImage);
+            socket.send(resp); 
+          });
+
+        }
+      });
+
+      function setStateImage(checkbox, image, onImage) {
+        if (checkbox.checked) {
+          image.src = onImage; 
+        } else {
+          image.src = "off.svg";
+        }
+      }
     </script>
   </body>
 </html>

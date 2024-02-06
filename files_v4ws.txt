@@ -6,6 +6,8 @@ computer.svg
 favicon.png
 on_green.svg
 on_yellow.svg
+on_red.svg
+on_blue.svg
 off.svg
 secrets.py
 wlan.py
