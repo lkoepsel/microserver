@@ -53,6 +53,9 @@ Continues on the theme of using Web Sockets, instead of a page reload. In this c
 ### Version 4 
 Adds information to the four LED's by providing documentation as to the color/pin combination expected. This adds using a template file with variables, expanding on the user experience.
 
+### Version 4ws - Web Socket version 
+Adds another led to demonstrate multiple LED control via Web Sockets. This is an interim step and needs to be refactored, to make it easier to add more leds.
+
 ### Version 5
 Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
 

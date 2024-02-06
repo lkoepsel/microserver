@@ -1,0 +1,21 @@
+# light_leds_v4ws files
+/templates
+/utemplate
+/microdot
+computer.svg
+favicon.png
+on_green.svg
+on_yellow.svg
+off.svg
+secrets.py
+wlan.py
++light_leds_v4ws.py
+microdot/__init__.py
+microdot/microdot.py
+microdot/websocket.py
+utemplate/compiled.py
+utemplate/recompile.py
+utemplate/source.py
+templates/mvp.css
+templates/style_v4ws.css
+!templates/index_v4ws.html,templates/index.html

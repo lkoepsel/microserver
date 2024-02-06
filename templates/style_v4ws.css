@@ -1,0 +1,33 @@
+.leds {
+  inline-size: 300px;
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+
+.led_1 {
+  inline-size: 100px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.led_2 {
+  inline-size: 100px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.visually-hidden { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.state-image_1 {
+  cursor: pointer; 
+}
+
+.state-image_2 {
+  cursor: pointer; 
+}
