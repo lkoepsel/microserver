@@ -1,32 +1,24 @@
 .leds {
-  inline-size: 600px;
   display: flex;
-  justify-content: space-evenly;
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: left;
+  padding-left: 20px;
 }
 
 .led_1 {
-  inline-size: 100px;
-  display: flex;
-  justify-content: space-evenly;
+  margin-bottom: 10px;
 }
 
 .led_2 {
-  inline-size: 100px;
-  display: flex;
-  justify-content: space-evenly;
+  margin-bottom: 10px;
 }
 
 .led_3 {
-  inline-size: 100px;
-  display: flex;
-  justify-content: space-evenly;
+  margin-bottom: 10px;
 }
 
 .led_4 {
-  inline-size: 100px;
-  display: flex;
-  justify-content: space-evenly;
+  margin-bottom: 10px;
 }
 
 .visually-hidden { 
@@ -36,10 +28,6 @@
   height: 0;
 }
 
-.state-image_1 {
-  cursor: pointer; 
-}
-
-.state-image_2 {
+.state-image {
   cursor: pointer; 
 }
