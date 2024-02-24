@@ -3,6 +3,7 @@
 /utemplate
 /microdot
 computer.svg
+favicon.ico
 favicon.png
 on_green.svg
 on_yellow.svg

@@ -8,7 +8,7 @@ from microdot.websocket import with_websocket
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
     yellow = Pin(2, Pin.OUT)
