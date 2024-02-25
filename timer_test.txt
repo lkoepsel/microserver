@@ -1,0 +1,20 @@
+# timer_test files
+/templates
+/utemplate
+/microdot
+computer.svg
+favicon.png
+on.svg
+off.svg
+secrets.py
+wlan.py
++timer_test.py
+microdot/__init__.py
+microdot/microdot.py
+microdot/websocket.py
+utemplate/compiled.py
+utemplate/recompile.py
+utemplate/source.py
+templates/mvp.css
+templates/style_v3ws.css
+!templates/timer_test.html,templates/index.html

@@ -51,11 +51,11 @@ def web_server():
     @with_websocket
     async def ws(request, ws):
         while True:
-            data = eval(await ws.receive())
+            data = await ws.receive()
             print(f"{data=}")
-            if data:
+            if data == 'true':
                 blink_led.value(1)
-            elif not data:
+            elif data == 'false':
                 blink_led.value(0)
             else:
                 print(f"{data} sent, value must be boolean")

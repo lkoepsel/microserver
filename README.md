@@ -258,3 +258,13 @@ cp('src', 'dest'), mv('old', 'new'), rm(...)
 pwd, cd(...), mkdir(...), rmdir(...), tree(...), du(...)
 ```
 The last two commands came from [here](https://forum.micropython.org/viewtopic.php?t=7550) and can be quite useful!
+
+
+## Viewing JSON Responses in Browser
+It helps to view the web socket responses in your browser to further understand them. I use Arc, which is Chrome-based as Chrome has very good developer tools. In a Chrome-based browser:
+1. Click on Developer Tools to show the window
+2. Click on Network tab at the top
+3. Ensure All is clicked whowing all data (second line from top)
+4. Do a refresh of the browser to display all activity, you will now see all of the files sent under Name
+5. Click on ws for web socket, which will display Headers Messages Initiator Timing in the adjacent window, click on Messages to show the JSON data being exchanged.
+6. Click on a specific line if you wish to see more details
