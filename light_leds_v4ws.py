@@ -69,8 +69,9 @@ def web_server():
     @with_websocket
     async def ws(request, ws):
         while True:
-            data = json.loads(await ws.receive())
-            print(f"{data=}")
+            raw = await ws.receive()
+            print(f"{raw=}")
+            data = json.loads(raw)
             leds[data['i']].value(int(data['checkbox']))
 
     app.run(debug=True)

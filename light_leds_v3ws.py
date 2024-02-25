@@ -7,10 +7,12 @@ from microdot.websocket import with_websocket
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
-    builtin = Pin("LED", Pin.OUT)
+    # only one blink_led can be defined, based on built-in or external led
+    # blink_led = Pin("LED", Pin.OUT)
+    blink_led = Pin(16, Pin.OUT)
 
     app = Microdot()
 
@@ -49,14 +51,14 @@ def web_server():
     @with_websocket
     async def ws(request, ws):
         while True:
-            data = await ws.receive()
+            data = eval(await ws.receive())
             print(f"{data=}")
-            if data == 'true':
-                builtin.value(1)
-            elif data == 'false':
-                builtin.value(0)
+            if data:
+                blink_led.value(1)
+            elif not data:
+                blink_led.value(0)
             else:
-                print(f"Error occured, value must be 'true' or 'false'")
+                print(f"{data} sent, value must be boolean")
 
     app.run(debug=True)
 
