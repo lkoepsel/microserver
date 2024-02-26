@@ -48,13 +48,13 @@ Adds to version 1 with images for computer, and on/off leds. Very simple page wh
 Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.
 
 ### Version 3ws - Web Socket version
-Continues on the theme of using Web Sockets, instead of a page reload. In this case, the page uses a hidden checkbox, with the word "Click" as an indicator of action required. When clicked, the image changes to represent the state of the led, *on* or *off*.
+Continues on the theme of using Web Sockets, instead of a page reload. In this case, the page uses a hidden checkbox, with the word "Click" as an indicator of action required. When clicked, the image changes to represent the state of the led, *on* or *off*. The desktop Python program, *"set_pico_3ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
 
 ### Version 4 
 Adds information to the four LED's by providing documentation as to the color/pin combination expected. This adds using a template file with variables, expanding on the user experience.
 
 ### Version 4ws - Web Socket version 
-Similar to Version 4, it uses 4 LED's, however uses Web Sockets to connect. This version can be refactored a bit more using templates to reduce the redundent code in index_v4ws.html.
+Similar to Version 4, it uses 4 LED's, however uses Web Sockets to connect. This version can be refactored a bit more using templates to reduce the redundent code in index_v4ws.html. The desktop Python program, *"set_pico_4ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
 
 ### Version 5
 Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
@@ -68,6 +68,15 @@ I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *
 Used the combination of templates and variables to refactor the server program and webpages to be far more simple. The *microdot* *POST* can return an array of values, as compared to each value labeled separately. (*I missed this early on.*) Therefore, I'm able to use an array on getting the values and printing the values, simplifying the code.
 
 Simplifying the code makes a signficant difference in three areas, easier to maintain, 20% smaller in size and much easier to expand. This is the value in performing that "*one more iteration in factoring the code*".
+
+### Time Test
+I wanted to explore response times, so I created a set of files which end in *"-tt"* (time_test):
+* files_tt.txt - the mpbuild manifest for creating the application on a Pico
+* light_leds_tt.py - main Pico MicroPython program which measures and reports the time between a start and stop click
+* indext_tt.html - index.html which handles the start/stop and time reporting
+* set_pico_tt.py - desktop Python program to test response rates
+
+This set of programs is an interim step in measuring response. It demonstrates how to measure time between clicks, whether the clicks are from a browser or automated via *set_pico_tt*. The next step will be to allow for running the program for tens or hundreds of iterations and examine variance between response times vs. time between clicks.
 
 ## Additional Files Required
 ### secrets.py

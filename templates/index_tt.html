@@ -26,28 +26,32 @@
       </div>
     </main>
     <script>
-      // 1. Connect to a WebSocket server at the 'ws' endpoint
+      // Connect to a WebSocket server at the 'ws' endpoint
       const socket = new WebSocket('ws://' + location.host + '/ws');
 
-      // 2. Setup checkbox with the name of 'stateCheckbox'
+      // Setup checkbox with the name of 'stateCheckbox'
       // image will reflect the state of the checkbox
       // on load, set state to off
       const checkbox = document.getElementById('stateCheckbox');
       const stateImage = document.getElementById('stateImage');
-      const numberElapsed = document.getElementById('elapsed');
       setStateImage(); 
 
       // Listen for checkbox changes and change state image
       checkbox.addEventListener('change', setStateImage);
-      numberElapsed.addEventListener('change', setValue);
 
 
-      // 3. When checkbox state changes, also send state to socket
+      // When checkbox state changes, also send state to socket
       // 'true' for checked (on) and 'false' for unchecked (off)
-        checkbox.addEventListener('change', () => {
-          socket.send(checkbox.checked);
-          socket.send(elapsed.value); 
-        });
+      checkbox.addEventListener('change', () => {
+        socket.send(checkbox.checked);
+      });
+
+      // When the websocket receives an elapsed time from light_leds_tt
+      // it stores it in the hidden number field, elapsed  
+      socket.addEventListener('message', event => {
+        const elapsed = event.data * 0.001; 
+        document.getElementById('elapsed').value = elapsed;
+      });
 
       // function changes image based on state of checkbox
       function setStateImage() {
@@ -59,10 +63,6 @@
 
       }
 
-      // function changes image based on state of checkbox
-      function setValue() {
-          numberElapsed.value = elapsed;
-      }
     </script>
   </body>
 </html>

@@ -62,7 +62,7 @@ def web_server():
                 blink_led.value(0)
                 elapsed = ticks_diff(ticks_us(), start)
                 print(f"{elapsed=}")
-                await ws.send(elapsed)
+                await ws.send(str(elapsed))
             else:
                 print(f"{data} sent, value must be boolean")
 
