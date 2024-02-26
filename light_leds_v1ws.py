@@ -6,7 +6,7 @@ from microdot.websocket import with_websocket
 
 
 if not (connect()):
-    print(f"wireless connection failed")
+    print("wireless connection failed")
     sys.exit()
 
 builtin = Pin("LED", Pin.OUT)

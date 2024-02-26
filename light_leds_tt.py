@@ -1,9 +1,10 @@
-# from machine import Pin
+from machine import Pin
 from wlan import connect
 import sys
-from time import ticks_us, ticks_diff
 from microdot import Microdot, send_file
 from microdot.websocket import with_websocket
+import json
+from time import ticks_us, ticks_diff
 
 
 def web_server():
@@ -13,7 +14,7 @@ def web_server():
 
     # only one blink_led can be defined, based on built-in or external led
     # blink_led = Pin("LED", Pin.OUT)
-    # blink_led = Pin(16, Pin.OUT)
+    blink_led = Pin(16, Pin.OUT)
 
     app = Microdot()
 
@@ -55,12 +56,15 @@ def web_server():
             data = await ws.receive()
             print(f"{data=}")
             if data == 'true':
+                blink_led.value(1)
                 start = ticks_us()
             elif data == 'false':
-                elasped = ticks_diff(ticks_us(), start)
-                print(f"{elasped}")
+                blink_led.value(0)
+                elapsed = ticks_diff(ticks_us(), start)
+                print(f"{elapsed=}")
+                await ws.send(elapsed)
             else:
-                print(f"{data} sent, value must be true/false")
+                print(f"{data} sent, value must be boolean")
 
     app.run(debug=True)
 
