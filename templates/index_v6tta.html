@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Microdot WebSocket Demo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./mvp.css">
+    <link rel="stylesheet" href="./style_v5tt.css">
+  </head>
+  <body>
+    <main class="container">
+      <div>
+        <h1>LED WebSocket Demo</h1>
+        <figure>
+          <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
+        </figure>
+      </div>
+      <div class="leds">
+      
+        <input type="checkbox" id="stateCheckbox" class="visually-hidden"/>
+        <label class="state-image" for="stateCheckbox">Click</label>
+
+        <img src="off.svg" id="stateImage" height="100" width="100" alt="LED off" />
+      
+      </div>
+    </main>
+    <script>
+      // Connect to a WebSocket server at the 'ws' endpoint
+      const socket = new WebSocket('ws://' + location.host + '/ws');
+
+      // Setup start checkbox with the name of 'stateCheckbox'
+      const checkbox = document.getElementById('stateCheckbox');
+
+      // When checkbox state changes, also send state to socket
+      // 'true' for checked (on) and 'false' for unchecked (off)
+      checkbox.addEventListener('change', () => {
+        socket.send(checkbox.checked);
+      });
+
+      // JavaScript modification in the HTML file
+      let elapsedTimes = []; // Array to hold the elapsed times
+
+      // Function to send the array of elapsed times via WebSocket
+      function sendElapsedTimes() {
+          if (elapsedTimes.length > 0) {
+              // Convert the array to a JSON string and send it
+              socket.send(JSON.stringify(elapsedTimes));
+              // Clear the array after sending
+              elapsedTimes = [];
+          }
+      }
+
+      // When the websocket receives an elapsed time from the Pi Pico
+      // it adds it to the array instead of sending it immediately
+      socket.addEventListener('message', event => {
+          const elapsed = parseFloat(event.data); // Assuming the data is a string representing a float
+          elapsedTimes.push(elapsed); // Add the elapsed time to the array
+
+          // Optionally, you can send the data after accumulating a certain number of elapsed times
+          if (elapsedTimes.length >= 5) { // For example, after 5 elapsed times
+              sendElapsedTimes();
+          }
+      });
+    </script>
+  </body>
+</html>
+
+
