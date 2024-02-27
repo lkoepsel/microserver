@@ -1,4 +1,4 @@
-# light_leds_tt files
+# light_leds_v5tt files
 /templates
 /utemplate
 /microdot
@@ -8,7 +8,7 @@ on.svg
 off.svg
 secrets.py
 wlan.py
-+light_leds_tt.py
++light_leds_v5tt.py
 microdot/__init__.py
 microdot/microdot.py
 microdot/websocket.py
@@ -16,5 +16,5 @@ utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
 templates/mvp.css
-templates/style_v3ws.css
-!templates/index_tt.html,templates/index.html
+templates/style_v5tt.css
+!templates/index_v5tt.html,templates/index.html

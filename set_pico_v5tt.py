@@ -2,13 +2,13 @@ import time
 from websocket import create_connection
 
 ws = create_connection("ws://10.0.1.6:5000/ws")
-response_time = .01
+interval = .01
 
 while True:
     ws.send('true')
-    time.sleep(response_time)
+    time.sleep(interval)
 
     ws.send('false')
-    time.sleep(response_time)
+    time.sleep(interval)
     elapsed = ws.recv()
     print(f"Elapsed time: {elapsed} us")

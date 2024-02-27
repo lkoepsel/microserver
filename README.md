@@ -15,7 +15,7 @@ Using new 2.0 version of [microdot web server](https://github.com/miguelgrinberg
 All mpbuild files *files_vN.txt* have been tested and load properly. I've added `async def` to all web functions in the 7th version *light_leds_v7* per the documentation. The recommendation stated it could increase performance. It does appear to do so, though I haven't done explicit timing.
 
 ## Introduction
-The contents of this folder enable a simple web page offering the ability to turn LED's on or off. The page is served by a small web server called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](), running on a Pico W. This demo is intended to serve as a simple iterative example as to how to develop a user-facing webpage running on the Pico W.
+The contents of this folder install a webserver application on a WiFi-enabled board running MicroPython. The server is a simple web page offering the ability to turn LED's on or off. The page is served by a small web server library called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](https://www.micropython.org), running on a Pico W. This demo is intended to serve as a simple, **iterative** example as to how to develop a user-facing webpage running on the Pico W.
 ## Versions and Installation
 If you already have files on your Pico W, you will need to "*wipe*" your Pico W file system (reformat it) to reduce possible program conflicts. **Be sure you have saved any program files on your PC, before doing so!** See *"Tool to Erase...* below for more information.
 
@@ -23,13 +23,13 @@ There are different versions, *_v1*, *_v2*, *_v3* etc. of the web server softwar
 
 Run these two commands to install the first version of files on the board.
 ```
-mpr littlefs_rp2 # this command will erase ALL program files on Pico!!
+mpremotelittlefs_rp2 # this command will erase ALL program files on Pico!!
 mpbuild.py files_v1.txt
 ``` 
 
 To move to the next version with *n* as the desired build version. 
 ```
-mpr littlefs_rp2 # this command will erase ALL program files on Pico!!
+mpremotelittlefs_rp2 # this command will erase ALL program files on Pico!!
 mpbuild files_vn.txt 
 ```
 ### Version 1
@@ -59,6 +59,23 @@ Similar to Version 4, it uses 4 LED's, however uses Web Sockets to connect. This
 ### Version 5
 Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
 
+### Version 5 Time Test
+I wanted to explore response times in greater detail, so I created a set of files which end in *"_v5tt"* (time_test):
+* files_v5tt.txt - the mpbuild manifest for creating the application on a Pico
+* light_leds_v5tt.py - main Pico MicroPython program which measures and reports the time between a start and stop click
+* indext_v5tt.html - index.html which handles the start/stop and time reporting
+* set_pico_v5tt.py - desktop Python program to test response rates
+
+This set of programs is an interim step in measuring response. It demonstrates how to measure time between clicks, whether the clicks are from a browser or automated via *set_pico_v5tt*. The next step will be to allow for running the program for tens or hundreds of iterations and examine variance between response times vs. time between clicks.
+
+#### Usage
+1. Install the \_v5tt application using `mpremote littlefs_rp2` and `mpbuild files_v5tt.txt`.
+2. Reset the Pi Pico to start the webserver and note the IP address
+3. Edit the *set_pico_v5tt.py* file and enter the correct IP address
+4. Run `python set_pico_v5tt.py` and observe the response times.
+
+You can change the value of the variable *interval* in *set_pico_v5tt*, to determine the impact of the interval between clicks on the response time of the webserver.
+
 ### Version 6
 Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), which I prefer. The goal of *mvp* is to immediately provide a *minimum-viable-product* web page which looks *clean*. I believe it is closer to what I was looking to achieve than what I found in *marx*. A [tutorial on mvp.css](https://calmcode.io/shorts/mvp.css.html). It is also half the size of *marx.css*.
 
@@ -68,15 +85,6 @@ I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *
 Used the combination of templates and variables to refactor the server program and webpages to be far more simple. The *microdot* *POST* can return an array of values, as compared to each value labeled separately. (*I missed this early on.*) Therefore, I'm able to use an array on getting the values and printing the values, simplifying the code.
 
 Simplifying the code makes a signficant difference in three areas, easier to maintain, 20% smaller in size and much easier to expand. This is the value in performing that "*one more iteration in factoring the code*".
-
-### Time Test
-I wanted to explore response times, so I created a set of files which end in *"-tt"* (time_test):
-* files_tt.txt - the mpbuild manifest for creating the application on a Pico
-* light_leds_tt.py - main Pico MicroPython program which measures and reports the time between a start and stop click
-* indext_tt.html - index.html which handles the start/stop and time reporting
-* set_pico_tt.py - desktop Python program to test response rates
-
-This set of programs is an interim step in measuring response. It demonstrates how to measure time between clicks, whether the clicks are from a browser or automated via *set_pico_tt*. The next step will be to allow for running the program for tens or hundreds of iterations and examine variance between response times vs. time between clicks.
 
 ## Additional Files Required
 ### secrets.py

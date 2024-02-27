@@ -3,7 +3,6 @@ from wlan import connect
 import sys
 from microdot import Microdot, send_file
 from microdot.websocket import with_websocket
-import json
 from time import ticks_us, ticks_diff
 
 
@@ -41,9 +40,9 @@ def web_server():
     async def mvp(request):
         return send_file('templates/mvp.css', max_age=31536000)
 
-    @ app.route('style_v3ws.css')
-    async def style_v3ws(request):
-        return send_file('templates/style_v3ws.css', max_age=31536000)
+    @ app.route('style_v5tt.css')
+    async def style_v5tt(request):
+        return send_file('templates/style_v5tt.css', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):
