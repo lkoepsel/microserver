@@ -57,9 +57,9 @@ def web_server():
     async def mvp(request):
         return send_file('templates/mvp.css', max_age=31536000)
 
-    @ app.route('style_v5tt.css')
-    async def style_v5tt(request):
-        return send_file('templates/style_v5tt.css', max_age=31536000)
+    @ app.route('style_v6tta.css')
+    async def style_v6tta(request):
+        return send_file('templates/style_v6tta.css', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):

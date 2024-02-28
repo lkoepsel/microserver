@@ -17,5 +17,5 @@ utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
 templates/mvp.css
-templates/style_v5tt.css
+templates/style_v6tta.css
 !templates/index_v6tta.html,templates/index.html
