@@ -12,6 +12,7 @@ wlan.py
 microdot/__init__.py
 microdot/microdot.py
 microdot/websocket.py
+microdot/utemplate.py
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py

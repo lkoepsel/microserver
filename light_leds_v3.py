@@ -51,7 +51,7 @@ def set_led(leds):
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
     app = Microdot()

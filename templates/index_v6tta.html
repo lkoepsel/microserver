@@ -1,3 +1,4 @@
+{% args max%}
 <!doctype html>
 <html>
   <head>
@@ -14,14 +15,17 @@
           <img src="computer.svg" height="300" width="300" alt="Pico W Icon" />
         </figure>
       </div>
-      <div class="leds">
-      
-        <input type="checkbox" id="stateCheckbox" class="visually-hidden"/>
-        <label class="state-image" for="stateCheckbox">Click</label>
 
-        <img src="off.svg" id="stateImage" height="100" width="100" alt="LED off" />
-      
+      <div>
+        <label for="max">Number of timings</label>
+        <input type="number" id="max" value="{{ max }}"/>
       </div>
+
+      <button>
+        <input type="checkbox" id="stateCheckbox" class="visually-hidden"/>
+        <label class="state-image" for="stateCheckbox">Start/Stop</label>
+      </button>
+
     </main>
     <script>
       // Connect to a WebSocket server at the 'ws' endpoint
@@ -29,7 +33,7 @@
 
       // Number of times to loop before sending data
       // Also set in index.html and set_pico versions
-      const max_sessions = 20;
+      const max_sessions = document.getElementById('max').value;
 
       // Setup start checkbox with the name of 'stateCheckbox'
       const checkbox = document.getElementById('stateCheckbox');

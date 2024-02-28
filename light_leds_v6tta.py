@@ -1,6 +1,7 @@
 from wlan import connect
 import sys
-from microdot import Microdot, send_file
+from microdot import Microdot, Response, send_file, Request
+from microdot.utemplate import Template
 from microdot.websocket import with_websocket
 from time import ticks_us, ticks_diff
 
@@ -8,7 +9,7 @@ from time import ticks_us, ticks_diff
 # Pseudo-code for the Pi Pico side
 elapsed_times = []
 session_count = 0
-max_sessions = 20  # Number of sessions before sending data back
+max_sessions = 10  # Number of sessions before sending data back
 
 
 async def save_times(t, ws):
@@ -28,10 +29,14 @@ def web_server():
         sys.exit()
 
     app = Microdot()
+    Response.default_content_type = 'text/html'
+    Request.socket_read_timeout = None
 
-    @app.route('/')
+    @app.route('/', methods=['GET'])
     async def index(request):
-        return send_file('templates/index.html')
+        global max_sessions
+        return Template('index.html').render(max_sessions)
+        # return send_file('templates/index.html')
 
     @app.get('computer.svg')
     def computer_svg(request):
