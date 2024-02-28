@@ -8,7 +8,7 @@ from time import ticks_us, ticks_diff
 # Pseudo-code for the Pi Pico side
 elapsed_times = []
 session_count = 0
-max_sessions = 5  # Number of sessions before sending data back
+max_sessions = 20  # Number of sessions before sending data back
 
 
 async def save_times(t, ws):

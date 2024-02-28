@@ -27,6 +27,10 @@
       // Connect to a WebSocket server at the 'ws' endpoint
       const socket = new WebSocket('ws://' + location.host + '/ws');
 
+      // Number of times to loop before sending data
+      // Also set in index.html and set_pico versions
+      const max_sessions = 20;
+
       // Setup start checkbox with the name of 'stateCheckbox'
       const checkbox = document.getElementById('stateCheckbox');
 
@@ -56,7 +60,8 @@
           elapsedTimes.push(elapsed); // Add the elapsed time to the array
 
           // Optionally, you can send the data after accumulating a certain number of elapsed times
-          if (elapsedTimes.length >= 5) { // For example, after 5 elapsed times
+          if (elapsedTimes.length >= max_sessions) { 
+          // max_sessions, see above for locations
               sendElapsedTimes();
           }
       });
