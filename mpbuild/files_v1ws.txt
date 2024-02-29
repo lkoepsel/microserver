@@ -1,13 +1,11 @@
 # light_leds_v1ws files
 /templates
+/templates/styles
 /utemplate
 /microdot
-computer.svg
-on.svg
-off.svg
 secrets.py
 wlan.py
-+light_leds_v1ws.py
++websockets/light_leds_v1ws.py
 microdot/__init__.py
 microdot/microdot.py
 microdot/websocket.py

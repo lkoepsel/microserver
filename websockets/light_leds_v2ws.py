@@ -20,26 +20,26 @@ def web_server():
 
     @app.get('computer.svg')
     def computer_svg(request):
-        return send_file('./computer.svg',
+        return send_file('../images/computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @app.get('on.svg')
     def on_svg(request):
-        return send_file('./on.svg',
+        return send_file('../images/on.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @app.get('off.svg')
     def off_svg(request):
-        return send_file('./off.svg',
+        return send_file('../images/off.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @ app.route('mvp.css')
     async def mvp(request):
-        return send_file('templates/mvp.css', max_age=31536000)
+        return send_file('templates/styles/mvp.css', max_age=31536000)
 
     @ app.route('style_v2ws.css')
     async def style_v2ws(request):
-        return send_file('templates/style_v2ws.css', max_age=31536000)
+        return send_file('templates/styles/style_v2ws.css', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):
@@ -55,7 +55,7 @@ def web_server():
             elif data == 'off':
                 builtin.value(0)
             else:
-                print(f"Error occured, value must be 'on' or 'off'")
+                print("Error occured, value must be 'on' or 'off'")
 
     app.run(debug=True)
 

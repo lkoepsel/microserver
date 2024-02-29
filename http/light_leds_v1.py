@@ -16,13 +16,13 @@ def web_server():
 
     @app.route('/')
     def index(request):
-        return send_file('../templates/index.html')
+        return send_file('templates/index.html')
 
     @app.post('/')
     def index_post(request):
         level = int(request.form['level'])
         builtin.value(level)
-        return send_file('../templates/index.html')
+        return send_file('templates/index.html')
 
     @app.get('computer.svg')
     def computer_svg(request):

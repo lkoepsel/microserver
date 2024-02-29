@@ -31,7 +31,7 @@ def web_server():
 
     @app.route('/')
     def index(request):
-        return send_file('../templates/index.html')
+        return send_file('templates/index.html')
 
     @app.post('/')
     def index_post(request):
@@ -39,7 +39,7 @@ def web_server():
         led = request.form['led']
         print("Set", led, "led", level)
         set_led(led, level)
-        return send_file('../templates/index.html')
+        return send_file('templates/index.html')
 
     @app.get('computer.svg')
     def computer_svg(request):

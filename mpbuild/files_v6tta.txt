@@ -1,14 +1,16 @@
 # light_leds_v6tta files
 /templates
+/templates/styles
 /utemplate
 /microdot
-computer.svg
+/images
+images/computer.svg
 favicon.ico
-on.svg
-off.svg
+images/on.svg
+images/off.svg
 secrets.py
 wlan.py
-+light_leds_v6tta.py
++websockets/light_leds_v6tta.py
 microdot/__init__.py
 microdot/microdot.py
 microdot/websocket.py
@@ -16,6 +18,6 @@ microdot/utemplate.py
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
-templates/mvp.css
-templates/style_v6tta.css
+templates/styles/mvp.css
+templates/styles/style_v6tta.css
 !templates/index_v6tta.html,templates/index.html

@@ -23,26 +23,26 @@ def web_server():
 
     @app.get('computer.svg')
     def computer_svg(request):
-        return send_file('./computer.svg',
+        return send_file('../images/computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @app.get('on.svg')
     def on_svg(request):
-        return send_file('./on.svg',
+        return send_file('../images/on.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @app.get('off.svg')
     def off_svg(request):
-        return send_file('./off.svg',
+        return send_file('../images/off.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @ app.route('mvp.css')
     async def mvp(request):
-        return send_file('templates/mvp.css', max_age=31536000)
+        return send_file('templates/styles/mvp.css', max_age=31536000)
 
     @ app.route('style_v5tt.css')
     async def style_v5tt(request):
-        return send_file('templates/style_v5tt.css', max_age=31536000)
+        return send_file('templates/styles/style_v5tt.css', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):

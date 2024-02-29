@@ -36,30 +36,29 @@ def web_server():
     async def index(request):
         global max_sessions
         return Template('index.html').render(max_sessions)
-        # return send_file('templates/index.html')
 
     @app.get('computer.svg')
     def computer_svg(request):
-        return send_file('./computer.svg',
+        return send_file('../images/computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @app.get('on.svg')
     def on_svg(request):
-        return send_file('./on.svg',
+        return send_file('../images/on.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @app.get('off.svg')
     def off_svg(request):
-        return send_file('./off.svg',
+        return send_file('../images/off.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @ app.route('mvp.css')
     async def mvp(request):
-        return send_file('templates/mvp.css', max_age=31536000)
+        return send_file('templates/styles/mvp.css', max_age=31536000)
 
     @ app.route('style_v6tta.css')
     async def style_v6tta(request):
-        return send_file('templates/style_v6tta.css', max_age=31536000)
+        return send_file('templates/styles/style_v6tta.css', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):
