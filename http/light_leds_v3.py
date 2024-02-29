@@ -1,17 +1,15 @@
-# light_leds_v4 - browser-based method of controlling leds
+# light_leds_v3 - browser-based method of controlling leds
 from machine import Pin
 from microdot import Microdot, Response, send_file, Request
 from microdot.utemplate import Template
 import sys
 from wlan import connect
 
-
 yellow = Pin(2, Pin.OUT)
 green = Pin(15, Pin.OUT)
 red = Pin(16, Pin.OUT)
 blue = Pin(22, Pin.OUT)
 led_state = ['', '', '', '']
-leds = [['yellow', 4], ['green', 20], ['red', 21], ['blue', 29]]
 
 
 def set_led(leds):
@@ -62,25 +60,25 @@ def web_server():
 
     @app.route('marx.css')
     def marx(request):
-        return send_file('templates/marx.css', max_age=31536000)
+        return send_file('../templates/styles/marx.css', max_age=31536000)
 
     @app.route('/', methods=['GET', 'POST'])
     def index(request):
         global led_state
         if request.method == 'POST':
             set_led(request.form.getlist('led'))
-            return Template('index.html').render(led_state, leds)
+            return Template('index.html').render(led_state)
         else:
-            return Template('index.html').render(led_state, leds)
+            return Template('index.html').render(led_state)
 
     @app.get('computer.svg')
     def computer_svg(request):
-        return send_file('./computer.svg',
+        return send_file('../images/computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
-    @app.get('favicon.png')
+    @app.get('favicon.ico')
     def favicon(request):
-        return send_file('./favicon.png', content_type='image/png')
+        return send_file('../favicon.ico', max_age=31536000)
 
     app.run(debug=True)
 

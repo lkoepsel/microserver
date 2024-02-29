@@ -2,6 +2,8 @@
 # 1. setup wireless lan
 # 2. set up the webserver
 # 3. allow the program to be called from the REPL
+# Required for success on the board:
+# microdot.py, wlan.py, example.py, secrets.py (manual copy)
 from microdot import Microdot
 import sys
 

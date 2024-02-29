@@ -1,16 +1,19 @@
-# light_leds_v2 files
+# light_leds_v3 files
 /templates
+/templates/styles
 /utemplate
 /microdot
-computer.svg
+/images
+images/computer.svg
 secrets.py
 wlan.py
-+light_leds_v2.py
+favicon.ico
++http/light_leds_v3.py
 microdot/__init__.py
 microdot/microdot.py
 microdot/utemplate.py
-templates/marx.css
+templates/styles/marx.css
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
-!templates/index_v2.html,templates/index.html
+!templates/index_v3.html,templates/index.html

@@ -1,0 +1,19 @@
+# light_leds_v5 files
+/templates
+/templates/styles
+/utemplate
+/microdot
+/images
+images/computer.svg
+secrets.py
+wlan.py
++http/light_leds_v5.py
+microdot/__init__.py
+microdot/microdot.py
+microdot/utemplate.py
+templates/styles/marx.css
+utemplate/compiled.py
+utemplate/recompile.py
+utemplate/source.py
+!templates/index_v5.html,templates/index.html
+!templates/control_v5.html,templates/control.html

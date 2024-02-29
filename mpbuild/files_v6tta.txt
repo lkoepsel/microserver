@@ -1,17 +1,21 @@
-# light_leds_v5 files
+# light_leds_v6tta files
 /templates
 /utemplate
 /microdot
 computer.svg
+favicon.ico
+on.svg
+off.svg
 secrets.py
 wlan.py
-+light_leds_v5.py
++light_leds_v6tta.py
 microdot/__init__.py
 microdot/microdot.py
+microdot/websocket.py
 microdot/utemplate.py
-templates/marx.css
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
-!templates/index_v5.html,templates/index.html
-!templates/control_v5.html,templates/control.html
+templates/mvp.css
+templates/style_v6tta.css
+!templates/index_v6tta.html,templates/index.html

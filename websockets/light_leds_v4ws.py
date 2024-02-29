@@ -63,7 +63,7 @@ def web_server():
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):
-        return send_file('./favicon.png', max_age=31536000)
+        return send_file('./favicon.ico', max_age=31536000)
 
     @app.route('/ws')
     @with_websocket

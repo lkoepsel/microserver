@@ -1,14 +1,14 @@
-# light_leds_v2ws files
+# light_leds_v3ws files
 /templates
 /utemplate
 /microdot
 computer.svg
-favicon.png
+favicon.ico
 on.svg
 off.svg
 secrets.py
 wlan.py
-+light_leds_v2ws.py
++light_leds_v3ws.py
 microdot/__init__.py
 microdot/microdot.py
 microdot/websocket.py
@@ -16,5 +16,5 @@ utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py
 templates/mvp.css
-templates/style_v2ws.css
-!templates/index_v2ws.html,templates/index.html
+templates/style_v3ws.css
+!templates/index_v3ws.html,templates/index.html

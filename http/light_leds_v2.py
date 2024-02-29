@@ -24,14 +24,14 @@ def set_led(color, level):
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
     app = Microdot()
 
     @app.route('/')
     def index(request):
-        return send_file('templates/index.html')
+        return send_file('../templates/index.html')
 
     @app.post('/')
     def index_post(request):
@@ -39,11 +39,11 @@ def web_server():
         led = request.form['led']
         print("Set", led, "led", level)
         set_led(led, level)
-        return send_file('templates/index.html')
+        return send_file('../templates/index.html')
 
     @app.get('computer.svg')
     def computer_svg(request):
-        return send_file('./computer.svg',
+        return send_file('../images/computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     app.run(debug=True)

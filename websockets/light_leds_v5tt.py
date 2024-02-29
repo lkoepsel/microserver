@@ -1,26 +1,9 @@
+from machine import Pin
 from wlan import connect
 import sys
-from microdot import Microdot, Response, send_file, Request
-from microdot.utemplate import Template
+from microdot import Microdot, send_file
 from microdot.websocket import with_websocket
 from time import ticks_us, ticks_diff
-
-
-# Pseudo-code for the Pi Pico side
-elapsed_times = []
-session_count = 0
-max_sessions = 10  # Number of sessions before sending data back
-
-
-async def save_times(t, ws):
-    global session_count
-    elapsed_times.append(t)
-    session_count += 1
-    if session_count >= max_sessions:
-        await ws.send(str(elapsed_times))
-        print(f"{elapsed_times}")
-        elapsed_times.clear()
-        session_count = 0
 
 
 def web_server():
@@ -28,15 +11,15 @@ def web_server():
         print("wireless connection failed")
         sys.exit()
 
-    app = Microdot()
-    Response.default_content_type = 'text/html'
-    Request.socket_read_timeout = None
+    # only one blink_led can be defined, based on built-in or external led
+    # blink_led = Pin("LED", Pin.OUT)
+    blink_led = Pin(16, Pin.OUT)
 
-    @app.route('/', methods=['GET'])
+    app = Microdot()
+
+    @app.route('/')
     async def index(request):
-        global max_sessions
-        return Template('index.html').render(max_sessions)
-        # return send_file('templates/index.html')
+        return send_file('templates/index.html')
 
     @app.get('computer.svg')
     def computer_svg(request):
@@ -57,26 +40,28 @@ def web_server():
     async def mvp(request):
         return send_file('templates/mvp.css', max_age=31536000)
 
-    @ app.route('style_v6tta.css')
-    async def style_v6tta(request):
-        return send_file('templates/style_v6tta.css', max_age=31536000)
+    @ app.route('style_v5tt.css')
+    async def style_v5tt(request):
+        return send_file('templates/style_v5tt.css', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):
-        return send_file('./favicon.png', max_age=31536000)
+        return send_file('../favicon.ico', max_age=31536000)
 
     @app.route('/ws')
     @with_websocket
     async def ws(request, ws):
-        global session_count
         while True:
             data = await ws.receive()
+            print(f"{data=}")
             if data == 'true':
+                blink_led.value(1)
                 start = ticks_us()
             elif data == 'false':
+                blink_led.value(0)
                 elapsed = ticks_diff(ticks_us(), start)
-                await save_times(elapsed, ws)
-
+                print(f"{elapsed=}")
+                await ws.send(str(elapsed))
             else:
                 print(f"{data} sent, value must be boolean")
 

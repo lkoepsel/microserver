@@ -1,7 +1,9 @@
 # Pico W LED Demo
 
 ## Updated:
-Using new 2.0 version of [microdot web server](https://github.com/miguelgrinberg/microdot). This changes how microdot is copied to the board, instead of standalone files, it looks like a package:
+**Mar 2024:** Reorganized the site to be more hierarchical, adding folder for specific categories. The build files now reside in the *mpbuild* folder and they have been updated for the http versions of the webserver.
+
+**Jan 2024:** Using new 2.0 version of [microdot web server](https://github.com/miguelgrinberg/microdot). This changes how microdot is copied to the board, instead of standalone files, it looks like a package:
 
 ```bash
 ...files

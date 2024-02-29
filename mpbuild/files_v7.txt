@@ -1,17 +1,19 @@
 # webserver_v7 files
 /templates
+/templates/styles
 /utemplate
 /microdot
-computer.svg
-favicon.png
+/images
+images/computer.svg
+favicon.ico
 pins.py
 secrets.py
 wlan.py
-+light_leds_v7.py
++http/light_leds_v7.py
 microdot/__init__.py
 microdot/microdot.py
 microdot/utemplate.py
-templates/mvp.css
+templates/styles/mvp.css
 utemplate/compiled.py
 utemplate/recompile.py
 utemplate/source.py

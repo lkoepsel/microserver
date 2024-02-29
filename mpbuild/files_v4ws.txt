@@ -4,7 +4,7 @@
 /microdot
 computer.svg
 favicon.ico
-favicon.png
+favicon.ico
 on_green.svg
 on_yellow.svg
 on_red.svg

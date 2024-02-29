@@ -7,7 +7,7 @@ from wlan import connect
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
     builtin = Pin("LED", Pin.OUT)
@@ -16,17 +16,17 @@ def web_server():
 
     @app.route('/')
     def index(request):
-        return send_file('templates/index.html')
+        return send_file('../templates/index.html')
 
     @app.post('/')
     def index_post(request):
         level = int(request.form['level'])
         builtin.value(level)
-        return send_file('templates/index.html')
+        return send_file('../templates/index.html')
 
     @app.get('computer.svg')
     def computer_svg(request):
-        return send_file('./computer.svg',
+        return send_file('../images/computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     app.run(debug=True)

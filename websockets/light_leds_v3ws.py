@@ -7,10 +7,12 @@ from microdot.websocket import with_websocket
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
-    builtin = Pin("LED", Pin.OUT)
+    # only one blink_led can be defined, based on built-in or external led
+    # blink_led = Pin("LED", Pin.OUT)
+    blink_led = Pin(16, Pin.OUT)
 
     app = Microdot()
 
@@ -37,25 +39,26 @@ def web_server():
     async def mvp(request):
         return send_file('templates/mvp.css', max_age=31536000)
 
-    @ app.route('style_v2ws.css')
-    async def style_v2ws(request):
-        return send_file('templates/style_v2ws.css', max_age=31536000)
+    @ app.route('style_v3ws.css')
+    async def style_v3ws(request):
+        return send_file('templates/style_v3ws.css', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):
-        return send_file('./favicon.png', max_age=31536000)
+        return send_file('./favicon.ico', max_age=31536000)
 
     @app.route('/ws')
     @with_websocket
     async def ws(request, ws):
         while True:
             data = await ws.receive()
-            if data == 'on':
-                builtin.value(1)
-            elif data == 'off':
-                builtin.value(0)
+            print(f"{data=}")
+            if data == 'true':
+                blink_led.value(1)
+            elif data == 'false':
+                blink_led.value(0)
             else:
-                print(f"Error occured, value must be 'on' or 'off'")
+                print(f"{data} sent, value must be boolean")
 
     app.run(debug=True)
 

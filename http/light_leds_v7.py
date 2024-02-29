@@ -75,7 +75,7 @@ def control_led(r_leds):
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
     app = Microdot()
@@ -84,7 +84,7 @@ def web_server():
 
     @ app.route('mvp.css')
     async def mvp(request):
-        return send_file('templates/mvp.css', max_age=31536000)
+        return send_file('templates/styles/mvp.css', max_age=31536000)
 
     @ app.post('/control.html')
     async def control(request):
@@ -105,12 +105,12 @@ def web_server():
 
     @ app.get('computer.svg')
     async def computer_svg(request):
-        return send_file('./computer.svg',
+        return send_file('../images/computer.svg',
                          content_type='image/svg+xml', max_age=31536000)
 
     @ app.get('favicon.ico')
     async def favicon_ico(request):
-        return send_file('./favicon.png', max_age=31536000)
+        return send_file('./favicon.ico', max_age=31536000)
 
     app.run(port=5001, debug=True)
 
