@@ -24,11 +24,6 @@ async def index(request):
 async def echo(request, ws):
     while True:
         data = await ws.receive()
-        if data == 'on':
-            builtin.value(1)
-        elif data == 'off':
-            builtin.value(0)
-        else:
-            await ws.send(data)
+        await ws.send(data)
 
 app.run(debug=True)
