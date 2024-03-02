@@ -17,6 +17,7 @@ def web_server():
     blue = Pin(22, Pin.OUT)
 
     leds = [yellow, green, red, blue]
+
     app = Microdot()
 
     @app.route('/')
@@ -70,7 +71,6 @@ def web_server():
     async def ws(request, ws):
         while True:
             raw = await ws.receive()
-            print(f"{raw=}")
             data = json.loads(raw)
             leds[data['i']].value(int(data['checkbox']))
 

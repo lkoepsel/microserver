@@ -24,35 +24,34 @@
       </div>
     </main>
     <script>
-      // 1. Connect to a WebSocket server at the 'ws' endpoint
-      const socket = new WebSocket('ws://' + location.host + '/ws');
+    // 1. Connect to a WebSocket server at the 'ws' endpoint
+    const socket = new WebSocket('ws://' + location.host + '/ws');
 
-      // 2. Setup checkbox with the name of 'stateCheckbox'
-      // image will reflect the state of the checkbox
-      // on load, set state to off
-      const checkbox = document.getElementById('stateCheckbox');
-      const stateImage = document.getElementById('stateImage');
-      setStateImage(); 
+    // 2. Setup checkbox with the name of 'stateCheckbox'
+    // image will reflect the state of the checkbox
+    // on load, set state to off
+    const checkbox = document.getElementById('stateCheckbox');
+    const stateImage = document.getElementById('stateImage');
+    setStateImage(); 
 
-      // Listen for checkbox changes and change state image
-      checkbox.addEventListener('change', setStateImage);
+    // 3. When checkbox state changes
+    // Change state image
+    // checkbox.addEventListener('change', setStateImage);
+    // Send state to socket, 'true' for checked/'false' for unchecked
+    checkbox.addEventListener('change', () => {
+      setStateImage();
+      socket.send(checkbox.checked); 
+    });
 
+    // function changes image based on state of checkbox
+    function setStateImage() {
+    if(checkbox.checked) {
+      stateImage.src = "on.svg"; 
+    } else {
+      stateImage.src = "off.svg";
+    }
 
-      // 3. When checkbox state changes, also send state to socket
-      // 'true' for checked (on) and 'false' for unchecked (off)
-        checkbox.addEventListener('change', () => {
-          socket.send(checkbox.checked); 
-        });
-
-      // function changes image based on state of checkbox
-      function setStateImage() {
-        if(checkbox.checked) {
-          stateImage.src = "on.svg"; 
-        } else {
-          stateImage.src = "off.svg";
-        }
-
-      }
+    }
     </script>
   </body>
 </html>

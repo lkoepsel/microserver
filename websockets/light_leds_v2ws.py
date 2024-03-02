@@ -7,7 +7,7 @@ from microdot.websocket import with_websocket
 
 def web_server():
     if not (connect()):
-        print(f"wireless connection failed")
+        print("wireless connection failed")
         sys.exit()
 
     builtin = Pin("LED", Pin.OUT)
@@ -50,12 +50,17 @@ def web_server():
     async def ws(request, ws):
         while True:
             data = await ws.receive()
-            if data == 'on':
-                builtin.value(1)
-            elif data == 'off':
-                builtin.value(0)
-            else:
-                print("Error occured, value must be 'on' or 'off'")
+
+            # with error checking
+            # if data == 'on':
+            #     builtin.value(1)
+            # elif data == 'off':
+            #     builtin.value(0)
+            # else:
+            #     print("Error occured, value must be 'on' or 'off'")
+
+            # refactored, w/o error checking
+            builtin.value(int(data))
 
     app.run(debug=True)
 
