@@ -15,12 +15,9 @@
         </figure>
       </div>
       <div class="leds">
-      
         <input type="checkbox" id="stateCheckbox" class="visually-hidden"/>
         <label class="state-image" for="stateCheckbox">Click</label>
-
-        <img src="off.svg" id="stateImage" height="100" width="100" alt="LED off" />
-      
+        <img src="off.svg" id="stateImage" height="100" width="100" alt="LED off" />      
       </div>
     </main>
     <script>
@@ -34,10 +31,7 @@
     const stateImage = document.getElementById('stateImage');
     setStateImage(); 
 
-    // 3. When checkbox state changes
-    // Change state image
-    // checkbox.addEventListener('change', setStateImage);
-    // Send state to socket, 'true' for checked/'false' for unchecked
+    // 3. Listen for checkbox changes, change state image and send value
     checkbox.addEventListener('change', () => {
       setStateImage();
       socket.send(checkbox.checked); 

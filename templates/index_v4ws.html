@@ -81,8 +81,8 @@
           // Add event listeners
           checkbox.addEventListener('change', () => {
             const resp = JSON.stringify({ "i":i, "checkbox":checkbox.checked});
-            setStateImage(checkbox, image, onImage);
             socket.send(resp); 
+            setStateImage(checkbox, image, onImage);
           });
 
         }

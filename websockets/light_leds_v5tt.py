@@ -58,8 +58,8 @@ def web_server():
                 blink_led.value(1)
                 start = ticks_us()
             elif data == 'false':
-                blink_led.value(0)
                 elapsed = ticks_diff(ticks_us(), start)
+                blink_led.value(0)
                 print(f"{elapsed=}")
                 await ws.send(str(elapsed))
             else:
