@@ -1,4 +1,3 @@
-from machine import Pin
 from wlan import connect
 import sys
 from microdot import Microdot, send_file
@@ -10,10 +9,6 @@ def web_server():
     if not (connect()):
         print("wireless connection failed")
         sys.exit()
-
-    # only one blink_led can be defined, based on built-in or external led
-    # blink_led = Pin("LED", Pin.OUT)
-    blink_led = Pin(16, Pin.OUT)
 
     app = Microdot()
 
@@ -53,14 +48,10 @@ def web_server():
     async def ws(request, ws):
         while True:
             data = await ws.receive()
-            print(f"{data=}")
             if data == 'true':
-                blink_led.value(1)
                 start = ticks_us()
             elif data == 'false':
                 elapsed = ticks_diff(ticks_us(), start)
-                blink_led.value(0)
-                print(f"{elapsed=}")
                 await ws.send(str(elapsed))
             else:
                 print(f"{data} sent, value must be boolean")
