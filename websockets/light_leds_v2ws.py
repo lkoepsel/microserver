@@ -49,7 +49,8 @@ def web_server():
     @with_websocket
     async def ws(request, ws):
         while True:
-            data = await ws.receive()
+            # in steps to show the values being transmitted, w/ error checks
+            # data = await ws.receive()
 
             # with error checking
             # if data == 'on':
@@ -59,8 +60,9 @@ def web_server():
             # else:
             #     print("Error occured, value must be 'on' or 'off'")
 
-            # refactored, w/o error checking
-            builtin.value(int(data))
+            # or refactored, w/o error checking
+            # requires radio buttons to send '1' and '0', not 'on' or 'off'
+            builtin.value(int(await ws.receive()))
 
     app.run(debug=True)
 
