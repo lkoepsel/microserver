@@ -25,7 +25,7 @@ def web_server():
     def index(request):
         return 'Hello, World!'
 
-    app.run(port=5001, debug=True)
+    app.run(port=5000, debug=True)
 
 
 # 3. allows us to debug calling web_server manually (REPL)

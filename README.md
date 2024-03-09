@@ -1,7 +1,9 @@
 # Pico W LED Demo
 
+## Introduction
+The contents of this folder install a webserver application on a WiFi-enabled board running MicroPython. The server is a simple web page offering the ability to turn LED's on or off. The page is served by a small web server library called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](https://www.micropython.org), running on a Pico W. This demo is intended to serve as a simple, **iterative** example as to how to develop a user-facing webpage running on the Pico W.
 ## Updated:
-**Mar 2024:** Reorganized the site to be more hierarchical, adding folder for specific categories. The build files now reside in the *mpbuild* folder and they have been updated for the http versions of the webserver.
+**Mar 2024:** Reorganized the site to be more hierarchical, adding folder for specific categories. The build files now reside in the *mpbuild* folder and they have been updated for the both the *http* (*/http*)  and *web socket* (/websockets) versions of the webserver.
 
 **Jan 2024:** Using new 2.0 version of [microdot web server](https://github.com/miguelgrinberg/microdot). This changes how microdot is copied to the board, instead of standalone files, it looks like a package:
 
@@ -16,8 +18,6 @@
 
 All mpbuild files *files_vN.txt* have been tested and load properly. I've added `async def` to all web functions in the 7th version *light_leds_v7* per the documentation. The recommendation stated it could increase performance. It does appear to do so, though I haven't done explicit timing.
 
-## Introduction
-The contents of this folder install a webserver application on a WiFi-enabled board running MicroPython. The server is a simple web page offering the ability to turn LED's on or off. The page is served by a small web server library called [microdot](https://github.com/miguelgrinberg/microdot), which was written for [MicroPython](https://www.micropython.org), running on a Pico W. This demo is intended to serve as a simple, **iterative** example as to how to develop a user-facing webpage running on the Pico W.
 ## Versions and Installation
 If you already have files on your Pico W, you will need to "*wipe*" your Pico W file system (reformat it) to reduce possible program conflicts. **Be sure you have saved any program files on your PC, before doing so!** See *"Tool to Erase...* below for more information.
 
@@ -25,43 +25,46 @@ There are different versions, *_v1*, *_v2*, *_v3* etc. of the web server softwar
 
 Run these two commands to install the first version of files on the board.
 ```
-mpremotelittlefs_rp2 # this command will erase ALL program files on Pico!!
+mpremote littlefs_rp2 # this command will erase ALL program files on Pico!!
 mpbuild.py files_v1.txt
 ``` 
 
 To move to the next version with *n* as the desired build version. 
 ```
-mpremotelittlefs_rp2 # this command will erase ALL program files on Pico!!
+mpremote littlefs_rp2 # this command will erase ALL program files on Pico!!
 mpbuild files_vn.txt 
 ```
-### Version 1
+### HTTP Versions
+These programs use *HTTP* protocol to communicate with the Pico. The advantage of this protocol, is that it is relatively easy to understand and code. It does require a reload every communication, which makes it cumbersome as a user-interface.
+
+#### Version 1
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
 
-### Version 1ws - Web Socket version
+#### Version 1ws - Web Socket version
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. The example builds on the *echo* example in the [Microdot documentation](https://microdot.readthedocs.io/en/latest/extensions.html#websocket-support).
 
-### Version 2
+#### Version 2
 Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for using several values.
 
-### Version 2ws - Web Socket version
+#### Version 2ws - Web Socket version
 Adds to version 1 with images for computer, and on/off leds. Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. Clicking on an image will turn the built-in led on/off. There is styling via css which hides the radio buttons, and provides a square around the selected state. The advantage of this version (or any Web Socket page), is that the page isn't reloaded, the javascript on the page will immediately advise the MicroPython application of the desired state.
 
-### Version 3
+#### Version 3
 Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.
 
-### Version 3ws - Web Socket version
+#### Version 3ws - Web Socket version
 Continues on the theme of using Web Sockets, instead of a page reload. In this case, the page uses a hidden checkbox, with the word "Click" as an indicator of action required. When clicked, the image changes to represent the state of the led, *on* or *off*. The desktop Python program, *"set_pico_3ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
 
-### Version 4 
-Adds information to the four LED's by providing documentation as to the color/pin combination expected. This adds using a template file with variables, expanding on the user experience.
+#### Version 4 
+Adds information to the four LED's by providing labels for each pin. This adds using a template file with variables, expanding on the user experience. 
 
-### Version 4ws - Web Socket version 
+#### Version 4ws - Web Socket version 
 Similar to Version 4, it uses 4 LED's, however uses Web Sockets to connect. This version can be refactored a bit more using templates to reduce the redundent code in index_v4ws.html. The desktop Python program, *"set_pico_4ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
 
-### Version 5
+#### Version 5
 Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
 
-### Version 5 Time Test
+#### Version 5 Time Test
 I wanted to explore response times in greater detail, so I created a set of files which end in *"_v5tt"* (time_test):
 * files_v5tt.txt - the mpbuild manifest for creating the application on a Pico
 * light_leds_v5tt.py - main Pico MicroPython program which measures and reports the time between a start and stop click
@@ -78,15 +81,47 @@ This set of programs is an interim step in measuring response. It demonstrates h
 
 You can change the value of the variable *interval* in *set_pico_v5tt*, to determine the impact of the interval between clicks on the response time of the webserver.
 
-### Version 6
+#### Version 6
 Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), which I prefer. The goal of *mvp* is to immediately provide a *minimum-viable-product* web page which looks *clean*. I believe it is closer to what I was looking to achieve than what I found in *marx*. A [tutorial on mvp.css](https://calmcode.io/shorts/mvp.css.html). It is also half the size of *marx.css*.
 
 I also replaced the four lists, (*labels, pins, gpio, states*) with the class, *Led*. It does simplify the setup and provides better slighly better self-documentation led_0.label instead of label[0]. Added GPIO numbers into table as well, for confirming programming.
 
-### Version 7
+#### Version 7
 Used the combination of templates and variables to refactor the server program and webpages to be far more simple. The *microdot* *POST* can return an array of values, as compared to each value labeled separately. (*I missed this early on.*) Therefore, I'm able to use an array on getting the values and printing the values, simplifying the code.
 
 Simplifying the code makes a signficant difference in three areas, easier to maintain, 20% smaller in size and much easier to expand. This is the value in performing that "*one more iteration in factoring the code*".
+
+### Web socket Versions
+These programs use the *web socket* protocol to communicate with the Pico. The advantage of this protocol, is that it is almost instantaneous as an user-interface. It can be more complicated to program and requires *Javascript*.
+
+#### Version 1ws - Web Socket version
+Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. The example builds on the *echo* example in the [Microdot documentation](https://microdot.readthedocs.io/en/latest/extensions.html#websocket-support).
+
+#### Version 2ws - Web Socket version
+Adds to version 1 with images for computer, and on/off leds. Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. Clicking on an image will turn the built-in led on/off. There is styling via css which hides the radio buttons, and provides a square around the selected state. The advantage of this version (or any Web Socket page), is that the page isn't reloaded, the javascript on the page will immediately advise the MicroPython application of the desired state.
+
+#### Version 3ws - Web Socket version
+Continues on the theme of using Web Sockets, instead of a page reload. In this case, the page uses a hidden checkbox, with the word "Click" as an indicator of action required. When clicked, the image changes to represent the state of the led, *on* or *off*. The desktop Python program, *"set_pico_3ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
+
+#### Version 4ws - Web Socket version 
+Similar to Version 4, it uses 4 LED's, however uses Web Sockets to connect. This version can be refactored a bit more using templates to reduce the redundent code in index_v4ws.html. The desktop Python program, *"set_pico_4ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
+
+#### Version 5 Time Test
+I wanted to explore response times in greater detail, so I created a set of files which end in *"_v5tt"* (time_test):
+* files_v5tt.txt - the mpbuild manifest for creating the application on a Pico
+* light_leds_v5tt.py - main Pico MicroPython program which measures and reports the time between a start and stop click
+* indext_v5tt.html - index.html which handles the start/stop and time reporting
+* set_pico_v5tt.py - desktop Python program to test response rates
+
+This set of programs is an interim step in measuring response. It demonstrates how to measure time between clicks, whether the clicks are from a browser or automated via *set_pico_v5tt*. The next step will be to allow for running the program for tens or hundreds of iterations and examine variance between response times vs. time between clicks.
+
+##### Usage
+1. Install the \_v5tt application using `mpremote littlefs_rp2` and `mpbuild files_v5tt.txt`.
+2. Reset the Pi Pico to start the webserver and note the IP address
+3. Edit the *set_pico_v5tt.py* file and enter the correct IP address
+4. Run `python set_pico_v5tt.py` and observe the response times.
+
+You can change the value of the variable *interval* in *set_pico_v5tt*, to determine the impact of the interval between clicks on the response time of the webserver.
 
 ## Additional Files Required
 ### secrets.py
@@ -106,7 +141,7 @@ To run on a Pico W:
 1. Start a serial program (see Note below)
 1. Press Reset or cycle power on your Pico W
 1. Use the IP address provided via the serial port
-1. Browse to IP address:5001 to play game (not 0.0.0.0 as stated)
+1. Browse to IP address:5000 (not 0.0.0.0 as stated)
 
 ## Resolving Connection Errors with Pico W
 Sometimes it is difficult to connect to the Pico W, here is some background and hints how to resolve issues.
@@ -119,19 +154,19 @@ MAC Address: 28:cd:c1:08:a9:7d
 Channel: 1
 SSID: Demo
 TX Power: 31
-Starting sync server on 0.0.0.0:5001...
+Starting sync server on 0.0.0.0:5000...
 ```
 It is also critical the device (phone or PC) which are using to connect with the Pico is on the same network as well. **Be sure you are connected to the same SSID.**
 
-The address you enter in your browser is a combination of the addresses supplied above. Use the **IP Address** combined with the *port number* following the *0.0.0.0* as in *:5001*. Using the above data, you would need to go to this address:
+The address you enter in your browser is a combination of the addresses supplied above. Use the **IP Address** combined with the *port number* following the *0.0.0.0* as in *:5000*. Using the above data, you would need to go to this address:
 ```
-http://10.0.1.12:5001
+http://10.0.1.12:5000
 ```
 
 If the wireless connection can not be made, the LED will blink at a faster rate and a error will be printed via the serial port as in:
 ```
 Connection failed: LINK_BADAUTH
-Starting sync server on 0.0.0.0:5001...
+Starting sync server on 0.0.0.0:5000...
 ```
 In this case, the password was in-correct, resulting in a *BADAUTH* or *bad authorization* error. The following line *Starting sync...* is irelevant as there isn't an IP address to connect.
 
@@ -157,7 +192,7 @@ MAC Address: 28:cd:c1:08:a9:7c
 Channel: 1
 SSID: Demo
 TX Power: 31
-Starting sync server on 0.0.0.0:5001...
+Starting sync server on 0.0.0.0:5000...
 ```
 ## Serial Programs
 I develop on a Mac and use [CoolTerm](https://freeware.the-meiers.org). It is quite robust and is able to connect to everything I've attempted. Another amazing aspect is that it can be automated using AppleScript. I'll provide a link to demonstrate this at a later date.

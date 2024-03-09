@@ -112,7 +112,7 @@ def web_server():
     async def favicon_ico(request):
         return send_file('./favicon.ico', max_age=31536000)
 
-    app.run(port=5001, debug=True)
+    app.run(port=5000, debug=True)
 
 
 if __name__ == '__main__':
