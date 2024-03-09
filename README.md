@@ -40,46 +40,17 @@ These programs use *HTTP* protocol to communicate with the Pico. The advantage o
 #### Version 1
 Very simple page which will provide the capability to turn the built-in LED ON/OFF. Introduces the HTTP POST method to pass a single value.
 
-#### Version 1ws - Web Socket version
-Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. The example builds on the *echo* example in the [Microdot documentation](https://microdot.readthedocs.io/en/latest/extensions.html#websocket-support).
-
 #### Version 2
 Moves from the built-in LED to four LEDs of different colors. Expands on HTTP POST method for using several values.
-
-#### Version 2ws - Web Socket version
-Adds to version 1 with images for computer, and on/off leds. Very simple page which will provide the capability to turn the built-in LED ON/OFF. Uses Web Sockets, instead of a method to pass a single value. Clicking on an image will turn the built-in led on/off. There is styling via css which hides the radio buttons, and provides a square around the selected state. The advantage of this version (or any Web Socket page), is that the page isn't reloaded, the javascript on the page will immediately advise the MicroPython application of the desired state.
 
 #### Version 3
 Fixes the user experience to allow for any number of the four LED's to be switched ON/OFF simultaneously. Adds the use of variables to be passed via the concept of a template, making the user experience more dynamic.
 
-#### Version 3ws - Web Socket version
-Continues on the theme of using Web Sockets, instead of a page reload. In this case, the page uses a hidden checkbox, with the word "Click" as an indicator of action required. When clicked, the image changes to represent the state of the led, *on* or *off*. The desktop Python program, *"set_pico_3ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
-
 #### Version 4 
 Adds information to the four LED's by providing labels for each pin. This adds using a template file with variables, expanding on the user experience. 
 
-#### Version 4ws - Web Socket version 
-Similar to Version 4, it uses 4 LED's, however uses Web Sockets to connect. This version can be refactored a bit more using templates to reduce the redundent code in index_v4ws.html. The desktop Python program, *"set_pico_4ws"* provides the ability to automate testing of this version, run it on your desktop instead of using a browser.
-
 #### Version 5
 Provides the capability for the user to set both the label for the color and the pin number being used. Similar to version 4, however, adds another form for the user to setup the breadboard. This allows the user to change pins or to provide a different set of labels such as *Error*, *Warning*, *Success*, or *Informational*, instead of *Red*, *Yellow*, *Green*, or *Blue*.
-
-#### Version 5 Time Test
-I wanted to explore response times in greater detail, so I created a set of files which end in *"_v5tt"* (time_test):
-* files_v5tt.txt - the mpbuild manifest for creating the application on a Pico
-* light_leds_v5tt.py - main Pico MicroPython program which measures and reports the time between a start and stop click
-* indext_v5tt.html - index.html which handles the start/stop and time reporting
-* set_pico_v5tt.py - desktop Python program to test response rates
-
-This set of programs is an interim step in measuring response. It demonstrates how to measure time between clicks, whether the clicks are from a browser or automated via *set_pico_v5tt*. The next step will be to allow for running the program for tens or hundreds of iterations and examine variance between response times vs. time between clicks.
-
-#### Usage
-1. Install the \_v5tt application using `mpremote littlefs_rp2` and `mpbuild files_v5tt.txt`.
-2. Reset the Pi Pico to start the webserver and note the IP address
-3. Edit the *set_pico_v5tt.py* file and enter the correct IP address
-4. Run `python set_pico_v5tt.py` and observe the response times.
-
-You can change the value of the variable *interval* in *set_pico_v5tt*, to determine the impact of the interval between clicks on the response time of the webserver.
 
 #### Version 6
 Replaces *marx.css* with [*mvp.css*](https://andybrewer.github.io/mvp/#docs), which I prefer. The goal of *mvp* is to immediately provide a *minimum-viable-product* web page which looks *clean*. I believe it is closer to what I was looking to achieve than what I found in *marx*. A [tutorial on mvp.css](https://calmcode.io/shorts/mvp.css.html). It is also half the size of *marx.css*.
@@ -214,7 +185,7 @@ The *Pico W* doesn't have a reset button, which means there are two alternatives
 This program hasn't been optimized for size as its a capability demo, not a production program. I have switched from bulma css framework (200K) to [*mvp.css*](https://andybrewer.github.io/mvp/#docs) (10k).
 
 ## Automation to Copy Project to Board
-The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board. The program *mpbuild.py* has been removed from this repository and now exists in the [CoolTerm_pip repository](https://github.com/lkoepsel/CoolTerm_pip). This repository continues to be the best example as to **how to use** *mpbuild.
+The program *mpbuild.py* provides automation to copy the appropriate files to the Pico board. The program *mpbuild.py* has been removed from this repository and now exists in the [CoolTerm_pip repository](https://github.com/lkoepsel/CoolTerm_pip). This repository continues to be the best example as to **how to use** *mpbuild*.
 ```bash
 mpbuild --help
 Usage: mpbuild [OPTIONS] BUILD
